@@ -1,0 +1,8 @@
+﻿Invalid parameters to add a new group. Use the following template:
+{
+	"group": {
+		"name":"name of the group",
+		"admin":"guid of the admin"
+	},
+	"password":"password of the admin you want to sign up."
+}

@@ -1,0 +1,5 @@
+﻿Invalid parameters to update group. Use the following template:
+{
+	"newName":"name of the group",
+	"password":"password of the admin of the group."
+}

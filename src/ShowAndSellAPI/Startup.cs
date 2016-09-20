@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore;
+
+using ShowAndSellAPI.Models;
+using ShowAndSellAPI.Models.Database;
 
 namespace ShowAndSellAPI
 {
@@ -27,6 +32,11 @@ namespace ShowAndSellAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            // add DbContext
+            var connection = @"Server=(localdb)\mssqllocaldb;Database=ShowAndSellAPI;Trusted_Connection=True;";
+            services.AddDbContext<SSDbContext>(options => options.UseSqlServer(connection));
+
             // Add framework services.
             services.AddMvc();
         }
