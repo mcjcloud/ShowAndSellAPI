@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
+using ShowAndSellAPI.Models.Database;
+using ShowAndSellAPI.Models;
+
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ShowAndSellAPI.Controllers
@@ -11,18 +14,29 @@ namespace ShowAndSellAPI.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly SSDbContext _context;
+
+        public UsersController(SSDbContext context)
         {
-            return new string[] { "value1", "value2" };
+            _context = context;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        //  Likely won't need a method to get all users (security)
+        // GET: api/values
+        [HttpGet]
+        public IEnumerable<SSGroup> GetAll()
         {
-            return "value";
+            return _context.Groups.ToArray();
+        }
+
+        // GET api/users/id
+        [HttpGet("{id}", Name = "GetUser")]
+        public IActionResult GetUser(string id)
+        {
+            SSUser user = _context.Users.Where(e => e.SSUserId == id).FirstOrDefault();
+            if (user == null) return NotFound();
+
+            return new ObjectResult(user);
         }
 
         // POST api/values
