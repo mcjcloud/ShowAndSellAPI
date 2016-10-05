@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 using ShowAndSellAPI.Models.Database;
 using ShowAndSellAPI.Models;
+using System.IO;
+using ShowAndSellAPI.Models.Http;
+using Microsoft.AspNetCore.WebUtilities;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,6 +17,7 @@ namespace ShowAndSellAPI.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
+        private const string ADMIN_PASSWORD = "donut";
         private readonly SSDbContext _context;
 
         public UsersController(SSDbContext context)
@@ -24,37 +28,54 @@ namespace ShowAndSellAPI.Controllers
         //  Likely won't need a method to get all users (security)
         // GET: api/values
         [HttpGet]
-        public IEnumerable<SSGroup> GetAll()
+        public IEnumerable<SSUser> Query([FromQuery]string adminPass, string name, string username, string password)
         {
-            return _context.Groups.ToArray();
+            // they put the admin pass, then return 
+            if(adminPass != null)
+            {
+                if (adminPass == ADMIN_PASSWORD)
+                    return _context.GetUsers();
+            }
+            //
+            if(name != null)
+            {
+                return _context.GetUsersByName(name);
+            }
+
+            if(username != null && password != null)
+            {
+                return _context.GetUserByUsername(username, password);
+            }
+             
+            return null;
         }
 
-        // GET api/users/id
+        // GET api/users/id?password=pass
         [HttpGet("{id}", Name = "GetUser")]
-        public IActionResult GetUser(string id)
+        public IActionResult GetUser(string id, [FromQuery]string password)
         {
-            SSUser user = _context.Users.Where(e => e.SSUserId == id).FirstOrDefault();
-            if (user == null) return NotFound();
-
-            return new ObjectResult(user);
+            return _context.GetUser(id, password);
         }
 
-        // POST api/values
+        // POST api/users Create a user object in the database.
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IActionResult CreateUser([FromBody]SSUser user)
         {
+            return _context.AddUser(user);
         }
 
-        // PUT api/values/5
+        // PUT api/users/id
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult UpdateUser(string id, [FromBody]UpdateUserRequest updateRequest)
         {
+            return _context.UpdateUser(id, updateRequest);
         }
 
-        // DELETE api/values/5
+        // DELETE api/users/id
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeleteUser(string id, [FromBody]DeleteUserRequest deleteRequest)
         {
+            return _context.DeleteUser(id, deleteRequest);
         }
     }
 }

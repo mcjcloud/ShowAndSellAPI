@@ -20,7 +20,6 @@ namespace ShowAndSellAPI.Models
         public string Condition { get; set; }
         public string Description { get; set; }
         public string  Thumbnail { get; set; }
-        //public List<string> Images { get; set; }
 
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore;
 
 using ShowAndSellAPI.Models;
 using ShowAndSellAPI.Models.Database;
+using System.Data.SqlClient;
 
 namespace ShowAndSellAPI
 {
@@ -33,9 +34,7 @@ namespace ShowAndSellAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            // add DbContext
-            var connection = @"Server=(localdb)\mssqllocaldb;Database=ShowAndSellAPI;Trusted_Connection=True;";
-            services.AddDbContext<SSDbContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<SSDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add framework services.
             services.AddMvc();
@@ -47,7 +46,13 @@ namespace ShowAndSellAPI
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
+            });
         }
     }
 }

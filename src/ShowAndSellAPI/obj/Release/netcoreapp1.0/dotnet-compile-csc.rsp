@@ -1,14 +1,15 @@
-﻿-d:DEBUG
+﻿-d:RELEASE
 -d:TRACE
 -d:NETCOREAPP1_0
 -nowarn:CS1701
 -nowarn:CS1702
 -nowarn:CS1705
+-optimize
 -debug:full
 -nostdlib
 -nologo
-"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\obj\Debug\netcoreapp1.0\dotnet-compile.assemblyinfo.cs"
--out:"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\bin\Debug\netcoreapp1.0\ShowAndSellAPI.dll"
+"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\obj\Release\netcoreapp1.0\dotnet-compile.assemblyinfo.cs"
+-out:"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\bin\Release\netcoreapp1.0\ShowAndSellAPI.dll"
 -r:"C:\Users\brayd\.nuget\packages\Microsoft.AspNetCore.Antiforgery\1.0.0\lib\netstandard1.3\Microsoft.AspNetCore.Antiforgery.dll"
 -r:"C:\Users\brayd\.nuget\packages\Microsoft.AspNetCore.Authorization\1.0.0\lib\netstandard1.3\Microsoft.AspNetCore.Authorization.dll"
 -r:"C:\Users\brayd\.nuget\packages\Microsoft.AspNetCore.Cors\1.0.0\lib\netstandard1.3\Microsoft.AspNetCore.Cors.dll"
@@ -193,7 +194,7 @@
 -r:"C:\Users\brayd\.nuget\packages\System.Threading.Timer\4.0.1\ref\netstandard1.2\System.Threading.Timer.dll"
 -r:"C:\Users\brayd\.nuget\packages\System.Xml.ReaderWriter\4.0.11\ref\netstandard1.3\System.Xml.ReaderWriter.dll"
 -r:"C:\Users\brayd\.nuget\packages\System.Xml.XDocument\4.0.11\ref\netstandard1.3\System.Xml.XDocument.dll"
--resource:"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\obj\Debug\netcoreapp1.0\ShowAndSellAPIdotnet-compile.deps.json",ShowAndSellAPI.deps.json
+-resource:"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\obj\Release\netcoreapp1.0\ShowAndSellAPIdotnet-compile.deps.json",ShowAndSellAPI.deps.json
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Program.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Startup.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Controllers\GroupsController.cs"

@@ -1,0 +1,322 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<html>
+
+<head>
+    <title>Docs</title>
+
+    <style>
+        .title {
+            background-color: #026291;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-top: 0px;
+
+            color: white;
+            text-align: center;
+        }
+
+        @* class for a category div *@
+        .category {
+            background-color: #109EE2;
+            padding: 1px;
+            padding-left: 5px;
+            padding-right: 5px;
+            width: 80%;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+
+            color: white;
+            text-align: left;
+        }
+
+        @* class for specific method *@
+        .methods {
+            width: 100%;
+            background-color: #6DC5F0;
+
+            color: black;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid;
+            border-spacing: 10px 0px;
+
+            table-layout: fixed;
+
+            font-size: 11pt;
+        }
+        .table td {
+            width: 25%;
+            border-bottom: 1px solid;
+            padding: 5px;
+            font-family: "Courier New", Courier, monospace;
+        }
+        .table tr:nth-child(even) {
+            background-color: #6DC5F0;
+        }
+        .table tr:nth-child(odd) {
+            background-color: lightgray;
+        }
+        .table th {
+            padding: 5px;
+            font-size: 12pt;
+        }
+        td, th {
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        h4 {
+            font-size: 16pt;
+            padding-left: 2%;
+        }
+
+        pre {
+            white-space: pre-wrap;       /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        }
+    </style>
+</head>
+
+<body style="background-color:#02496C; margin:0px;">
+    @* The title *@
+    <div class="title">
+        <h2>Show &amp; Sell Documentation</h2>
+    </div>
+
+    <br />
+
+    @* div to seperate the data from the title. *@
+    <div style="margin: auto;" align="center">
+        @* The Group Methods div *@
+        <div class="category">
+            <h4>Group Methods</h4>
+            @* methods for groups *@
+            <div class="methods">
+                <table class="table">
+                    <tr style="background-color: #6DC5F0">
+                        <th align="left"><h3><b>Method</b></h3></th>
+                        <th align="left"><h3><b>Path</b></h3></th>
+                        <th align="left"><h3><b>Body</b></h3></th>
+                        <th align="left"><h3><b>Description</b></h3></th>
+                        <th align="left"><h3><b>Example</b></h3></th>
+                    </tr>
+
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/groups/</td>
+                        <td>N/A</td>
+                        <td>Returns an array of all the Groups in JSON format.</td>
+                        <td>GET showandsell/api/groups/</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/groups?name={name of group}</td>
+                        <td>N/A</td>
+                        <td>Returns an array with 0-1 elements if the name matches a group in the database.</td>
+                        <td>GET /showandsell/api/groups?name=My Group</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/groups?id={GUID}</td>
+                        <td>N/A</td>
+                        <td>Returns a group with the specified id</td>
+                        <td>GET /showandsell/api/groups?id=9e64bdd0-4de4</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td>/api/groups/</td>
+                        <td>
+<pre>
+{
+    "group": {
+        "name":"Group Name",
+        "admin":"GUID"
+    },
+    "password":"adminpassword"
+}
+</pre>
+                        </td>
+                        <td>Adds a group to the database if the group name isn't taken, the admin doesn't already have a group, and the adminpass is correct.</td>
+                        <td>
+<pre>
+POST /api/groups/
+{
+    "group": {
+        "name":"My Cool Group",
+        "admin":"5ac56db2-f323"
+    },
+    "password":"cantguessthis123"
+}
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td>/api/groups/</td>
+                        <td>
+<pre>
+{
+    "newName":"name to change to",
+    "password":"admin password of the group"
+}
+</pre>
+                        </td>
+                        <td>Updates a group with the new name.</td>
+                        <td>
+<pre>
+PUT /api/groups?id=5ac56db2-f323
+{
+    "newName":"Group Name 2",
+    "password":"password2"
+}
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td>/api/groups?id={id of group to delete}</td>
+                        <td>
+<pre>
+{
+    "password":"password of group admin"
+}
+</pre>
+                        </td>
+                        <td>Deletes a group and all of its contents.</td>
+                        <td>
+<pre>
+DELETE /api/groups?id=5ac56db2-f323
+{
+    "password":"adminpassword"
+}
+</pre>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <br />
+
+        @* Users category *@
+        <div class="category">
+            <h4>User Methods</h4>
+            @* methods for users. *@
+            <div class="methods">
+                <table class="table">
+                    <tr style="background-color: #6DC5F0">
+                        <th align="left"><h3><b>Method</b></h3></th>
+                        <th align="left"><h3><b>Path</b></h3></th>
+                        <th align="left"><h3><b>Body</b></h3></th>
+                        <th align="left"><h3><b>Description</b></h3></th>
+                        <th align="left"><h3><b>Example</b></h3></th>
+                    </tr>
+
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/groups/</td>
+                        <td>N/A</td>
+                        <td>Returns an array of all the Groups in JSON format.</td>
+                        <td>GET showandsell/api/groups/</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/groups?name={name of group}</td>
+                        <td>N/A</td>
+                        <td>Returns an array with 0-1 elements if the name matches a group in the database.</td>
+                        <td>GET /showandsell/api/groups?name=My Group</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/groups?id={GUID}</td>
+                        <td>N/A</td>
+                        <td>Returns a group with the specified id</td>
+                        <td>GET /showandsell/api/groups?id=9e64bdd0-4de4-4cc7-8a8c-81b9032c6447</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td>/api/groups/</td>
+                        <td>
+<pre>
+{
+    "group": {
+        "name":"Group Name",
+        "admin":"GUID"
+    },
+    "password":"adminpassword"
+}
+</pre>
+                        </td>
+                        <td>Adds a group to the database if the group name isn't taken, the admin doesn't already have a group, and the adminpass is correct.</td>
+                        <td>
+<pre>
+POST /api/groups/
+{
+    "group": {
+        "name":"My Cool Group",
+        "admin":"5ac56db2-f323-4bb0-b910-6e4021a572ac"
+    },
+    "password":"cantguessthis123"
+}
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td>/api/groups/</td>
+                        <td>
+<pre>
+{
+    "newName":"name to change to",
+    "password":"admin password of the group"
+}
+</pre>
+                        </td>
+                        <td>Updates a group with the new name.</td>
+                        <td>
+<pre>
+PUT /api/groups?id=5ac56db2-f323-4bb0-b910-6e4021a572ac
+{
+    "newName":"Group Name 2",
+    "password":"password2"
+}
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td>/api/groups?id={id of group to delete}</td>
+                        <td>
+<pre>
+{
+    "password":"password of group admin"
+}
+</pre>
+                        </td>
+                        <td>Deletes a group and all of its contents.</td>
+                        <td>
+<pre>
+DELETE /api/groups?id=5ac56db2-f323-4bb0-b910-6e4021a572ac
+{
+    "password":"adminpassword"
+}
+</pre>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

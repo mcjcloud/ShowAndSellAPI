@@ -31,93 +31,45 @@ namespace ShowAndSellAPI.Controllers
 
         // GET: api/groups
         [HttpGet]
-        public IEnumerable<SSGroup> GetAll()
+        public IEnumerable<SSGroup> Query(string name)
         {
-            return _context.Groups.ToArray<SSGroup>();
+            // check if name is specified
+            if (name != null)
+            {
+                return new SSGroup[] { _context.GetGroupByName(name) };
+            }
+
+            return _context.GetGroups();
         }
 
         // GET api/groups/id
         [HttpGet("{id}", Name = "GetGroup")]
         public IActionResult GetGroup(string id)
         {
-            SSGroup group = _context.Groups.Where(e => e.SSGroupId == id).FirstOrDefault();
-            if(group == null) return NotFound();
-
-            return new ObjectResult(group);
+            return new ObjectResult(_context.GetGroup(id));
         }
 
         // POST api/groups
         // TODO: make sure this works with authentication
         [HttpPost]
-        public IActionResult Add([FromBody]AddGroupRequest groupRequest)
+        public IActionResult CreateGroup([FromBody]AddGroupRequest groupRequest)
         {
-            if (groupRequest == null) return BadRequest();
-
-            // if no admin was specified.
-            // bool is if there is insufficient data entered.
-            bool invalidRequest = groupRequest.Group.Admin == null || groupRequest.Group.Admin == "" || groupRequest.Group.Name == null || groupRequest.Group.Name == "" || groupRequest.Password == null;
-            if(invalidRequest)
-            {
-                string errorMessage = "";
-                using(StreamReader reader = new StreamReader(System.IO.File.OpenRead("Models/Http/Messages/AddGroup449.txt")))
-                {
-                    errorMessage += reader.ReadLine();
-                }
-
-                return StatusCode(449, errorMessage);
-            }
-
-            // check if user exists
-            SSUser admin = _context.Users.Where(e => e.SSUserId == groupRequest.Group.Admin).FirstOrDefault();
-            if(admin == null) return NotFound();
-
-            // check password
-            string realPassword = admin.Password;
-            if(groupRequest.Password != realPassword) return StatusCode(403, "Admin ID or password is incorrect.");
-
-            // add the group to the database.
-            groupRequest.Group.SSGroupId = Guid.NewGuid().ToString();
-            groupRequest.Group.DateCreated = DateTime.Now;
-            _context.Groups.Add(groupRequest.Group);
-            _context.SaveChanges();
-
-            return CreatedAtRoute("GetGroup", new { id = groupRequest.Group.SSGroupId }, groupRequest.Group);
+            return _context.AddGroup(groupRequest);
         }
 
         // PUT api/groups/id update a group in the database
         // TODO: make sure this method works (have to add users first).
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromBody]UpdateGroupRequest groupRequest)
+        public IActionResult UpdateGroup(string id, [FromBody]UpdateGroupRequest groupRequest)
         {
-            SSGroup groupToUpdate = _context.Groups.Where(e => e.SSGroupId == id).FirstOrDefault();
-            SSUser admin = _context.Users.Where(e => e.SSUserId == groupToUpdate.Admin).FirstOrDefault();
-            if(groupToUpdate == null || admin == null) return NotFound();
-
-            // authenticate/authorize
-            if(admin.Password != groupRequest.Password) return StatusCode(403, "Invalid id or password.");
-
-            groupToUpdate.Name = groupRequest.NewName;
-            _context.SaveChanges();
-            return StatusCode(200, "Group with GUID " + id + " has been updated.");
+            return _context.UpdateGroup(id, groupRequest);
         }
 
         // DELETE api/group/id
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id, [FromBody]DeleteGroupRequest groupRequest)
+        public IActionResult DeleteGroup(string id, [FromBody]DeleteGroupRequest groupRequest)
         {
-            SSGroup groupToDelete = _context.Groups.Where(e => e.SSGroupId == id).FirstOrDefault();
-            SSUser admin = _context.Users.Where(e => e.SSUserId == groupToDelete.Admin).FirstOrDefault();
-
-            if (groupToDelete == null || admin == null) return NotFound();
-            if (admin.Password == null) return StatusCode(500, "Internal Server Error :(");
-
-            // if not authorized, return 403
-            if(admin.Password != groupRequest.Password) return StatusCode(403, "Invalid group or password");
-
-            // remove the group
-            _context.Remove(groupToDelete);
-            _context.SaveChanges();
-            return StatusCode(200, "Group removed");
+            return _context.DeleteGroup(id, groupRequest);
         }
     }
 }
