@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.0/",
-    "signature": "4e6304f95a76e60a6e4a73d049443774d0606156"
+    "signature": "db0d614c0170607963ed146e5f4c2a34b12395e5"
   },
   "compilationOptions": {
     "defines": [
@@ -28,7 +28,8 @@
           "Microsoft.Extensions.Logging.Debug": "1.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
-          "Microsoft.EntityFrameworkCore.Tools": "1.0.0-preview2-final"
+          "Microsoft.EntityFrameworkCore.Tools": "1.0.0-preview2-final",
+          "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
         },
         "compile": {
           "ShowAndSellAPI.dll": {}
@@ -493,6 +494,17 @@
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.AspNetCore.Server.IISIntegration.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Server.IISIntegration.Tools/1.0.0-preview2-final": {
+        "dependencies": {
+          "Microsoft.DotNet.ProjectModel": "1.0.0-rc3-003121",
+          "Microsoft.Extensions.CommandLineUtils": "1.0.0",
+          "Microsoft.NETCore.App": "1.0.0",
+          "System.Diagnostics.Process": "4.1.0"
+        },
+        "compile": {
+          "lib/netcoreapp1.0/dotnet-publish-iis.dll": {}
         }
       },
       "Microsoft.AspNetCore.Server.Kestrel/1.0.0": {
@@ -2935,7 +2947,8 @@
           "Microsoft.Extensions.Logging.Debug": "1.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
-          "Microsoft.EntityFrameworkCore.Tools": "1.0.0-preview2-final"
+          "Microsoft.EntityFrameworkCore.Tools": "1.0.0-preview2-final",
+          "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
         },
         "runtime": {
           "ShowAndSellAPI.dll": {}
@@ -3400,6 +3413,17 @@
         },
         "runtime": {
           "lib/netstandard1.3/Microsoft.AspNetCore.Server.IISIntegration.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Server.IISIntegration.Tools/1.0.0-preview2-final": {
+        "dependencies": {
+          "Microsoft.DotNet.ProjectModel": "1.0.0-rc3-003121",
+          "Microsoft.Extensions.CommandLineUtils": "1.0.0",
+          "Microsoft.NETCore.App": "1.0.0",
+          "System.Diagnostics.Process": "4.1.0"
+        },
+        "runtime": {
+          "lib/netcoreapp1.0/dotnet-publish-iis.dll": {}
         }
       },
       "Microsoft.AspNetCore.Server.Kestrel/1.0.0": {
@@ -5920,6 +5944,11 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-xmn6EivvL4Ymo7LP+Jc49WLcIiYsUiujZo0loEbAg473nY2dIHxcxncpFAKzPf/MzqN0qBtaXEP0igYJ813H3Q=="
+    },
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools/1.0.0-preview2-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-anJPakI+TrGlyt8PmanTgN+yZXf7OsZRQCR9r5AqcnDF3SAzfVcQtUdtx2mI8YEH4F7aqsk/z2y3ecgDAP7HuA=="
     },
     "Microsoft.AspNetCore.Server.Kestrel/1.0.0": {
       "type": "package",

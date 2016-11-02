@@ -36,12 +36,12 @@ namespace ShowAndSellAPI.Controllers
                 if (adminPass == ADMIN_PASSWORD)
                     return _context.GetUsers();
             }
-            //
+            // get a user by name (excludes sensitive data)
             if(name != null)
             {
                 return _context.GetUsersByName(name);
             }
-
+            // get a user by username and password (includes sensitive data)
             if(username != null && password != null)
             {
                 return _context.GetUserByUsername(username, password);
@@ -73,9 +73,9 @@ namespace ShowAndSellAPI.Controllers
 
         // DELETE api/users/id
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser(string id, [FromBody]DeleteUserRequest deleteRequest)
+        public IActionResult DeleteUser(string id, [FromQuery]string password)
         {
-            return _context.DeleteUser(id, deleteRequest);
+            return _context.DeleteUser(id, password);
         }
     }
 }

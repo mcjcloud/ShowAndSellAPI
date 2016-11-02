@@ -101,7 +101,7 @@ namespace ShowAndSellAPI.Models.Database
         }
 
         // delete a group in the database
-        public IActionResult DeleteGroup(string id, DeleteGroupRequest groupRequest)
+        public IActionResult DeleteGroup(string id, string password)
         {
             SSGroup groupToDelete = Groups.Where(e => e.SSGroupId == id).FirstOrDefault();
             SSUser admin = Users.Where(e => e.SSUserId == groupToDelete.Admin).FirstOrDefault();
@@ -110,13 +110,15 @@ namespace ShowAndSellAPI.Models.Database
             if (admin.Password == null) return new StatusCodeResult(500);
 
             // if not authorized, return 403
-            if (admin.Password != groupRequest.Password) return new StatusCodeResult(403);
+            if (admin.Password != password) return new StatusCodeResult(403);
 
             // check for items to delete.
-            var items = Items.Where(e => e.GroupId == groupToDelete.SSGroupId);
+            IList<SSItem> items = Items.Where(e => e.GroupId == groupToDelete.SSGroupId).ToList();
             foreach (SSItem item in items)
             {
                 // TODO: delete the item.
+                string passw = Users.Where(e => e.SSUserId == groupToDelete.Admin).FirstOrDefault().Password;
+                DeleteItem(item.SSItemId, passw);   // the long complicated part gets the owner of the item, and then gets the password on the user.
             }
 
             // remove the group
@@ -205,9 +207,6 @@ namespace ShowAndSellAPI.Models.Database
             // if any of the fields aren't filled
             if (!fieldsFilled)
             {
-                string errorMessage = "";
-                using (StreamReader reader = new StreamReader(System.IO.File.OpenRead("Models/Http/Messages/AddGroup449.txt"))) { errorMessage += reader.ReadLine(); }
-
                 return new StatusCodeResult(449);
             }
             // check if username or email already exists
@@ -215,8 +214,6 @@ namespace ShowAndSellAPI.Models.Database
             {
                 if (_user.Username == user.Username || _user.Email == user.Email)
                 {
-                    string errorMessage = "";
-                    using (StreamReader reader = new StreamReader(System.IO.File.OpenRead("Models/Http/Messages/AddGroup449.txt"))) { errorMessage += reader.ReadLine(); }
                     return new StatusCodeResult(449);
                 }
             }
@@ -239,18 +236,18 @@ namespace ShowAndSellAPI.Models.Database
         }
 
         // delete a user
-        public IActionResult DeleteUser(string id, DeleteUserRequest deleteRequest)
+        public IActionResult DeleteUser(string id, string password)
         {
             SSUser userToDelete = Users.Where(e => e.SSUserId == id).FirstOrDefault();
             if (userToDelete == null) return new NotFoundResult();
-            if (userToDelete.Password != deleteRequest.Password) return new StatusCodeResult(403);
+            if (userToDelete.Password != password) return new StatusCodeResult(403);
 
             // check and delete a group that the user is admin of.
             SSGroup groupToDelete = Groups.Where(e => e.Admin == userToDelete.SSUserId).FirstOrDefault();
             if (groupToDelete != null)
             {
                 // request group delete.
-                DeleteGroup(groupToDelete.SSGroupId, new DeleteGroupRequest { Password = userToDelete.Password });
+                DeleteGroup(groupToDelete.SSGroupId, userToDelete.Password);
             }
 
             Remove(userToDelete);
@@ -268,7 +265,7 @@ namespace ShowAndSellAPI.Models.Database
         }
         public IEnumerable<SSItem> GetItems(string groupId)
         {
-            return Items.Where(e => e.SSItemId == groupId).ToArray();
+            return Items.Where(e => e.GroupId == groupId).ToArray();
         }
         public IEnumerable<SSItem> GetItems(string query, string groupId)
         {
@@ -289,28 +286,74 @@ namespace ShowAndSellAPI.Models.Database
         }
 
         // Create an item
-        public IActionResult CreateItem(SSItem item)
+        public IActionResult AddItem(SSItem item)
         {
             // check that the item is valid.
-            if (item == null) return new NotFoundResult();
+            if (item == null) return new BadRequestResult();
             if (item.Name == null || item.Name == "") return new StatusCodeResult(449);
             // check group id
             SSGroup group = Groups.Where(e => e.SSGroupId == item.GroupId).FirstOrDefault();
             if (group == null) return new StatusCodeResult(449);
+            // check owner id
+            SSUser owner = Users.Where(e => e.SSUserId == item.OwnerId).FirstOrDefault();
+            if (owner == null) return new StatusCodeResult(449);
 
+            // check if other data is null
+            var valid = item.Name != null && item.Condition != null && item.Description != null && item.Thumbnail != null;
+            if (!valid) return new StatusCodeResult(449);
+
+            // finalize the item and add it to the database.
+            item.SSItemId = Guid.NewGuid().ToString();
             Items.Add(item);
             SaveChanges();
 
+            // return the item as a JSON
             return new ObjectResult(item);
 
         }
 
         // update an item
-        /*
-        public IActionResult UpdateItem(string id)
+        public IActionResult UpdateItem(string id, UpdateItemRequest itemRequest)
         {
+            SSItem itemToUpdate = Items.Where(e => e.SSItemId == id).FirstOrDefault();
 
+            // check if fields are filled out.
+            bool valid = itemRequest.NewName != null && itemRequest.NewPrice != null && itemRequest.NewCondition != null && itemRequest.NewDescription != null && itemRequest.NewThumbnail != null;
+            if (!valid) return new StatusCodeResult(449);
+
+            // check if password is correct
+            SSGroup group = Groups.Where(e => e.SSGroupId == itemToUpdate.GroupId).FirstOrDefault();
+            SSUser admin = Users.Where(e => e.SSUserId == group.Admin).FirstOrDefault();
+            SSUser owner = Users.Where(e => e.SSUserId == itemToUpdate.OwnerId).FirstOrDefault();
+            if (owner.Password != itemRequest.OwnerPassword && admin.Password != itemRequest.OwnerPassword) return new UnauthorizedResult();
+
+            // set item properties
+            itemToUpdate.Name = itemRequest.NewName;
+            itemToUpdate.Price = itemRequest.NewPrice;
+            itemToUpdate.Condition = itemRequest.NewCondition;
+            itemToUpdate.Description = itemRequest.NewDescription;
+            itemToUpdate.Thumbnail = itemRequest.NewThumbnail;
+
+            // update and save changes
+            Update(itemToUpdate);
+            SaveChanges();
+            // return the updated object.
+            return new ObjectResult(itemToUpdate);
         }
-        */
+
+        // delete an item.
+        public IActionResult DeleteItem(string id, string password)
+        {
+            SSItem itemToDelete = Items.Where(e => e.SSItemId == id).FirstOrDefault();
+            SSGroup itemGroup = Groups.Where(e => e.SSGroupId == itemToDelete.GroupId).FirstOrDefault();
+            SSUser owner = Users.Where(e => e.SSUserId == itemGroup.Admin).FirstOrDefault();
+            // check authentication
+            if (owner.Password != password) return new UnauthorizedResult();
+
+            // delete the item and return the object that was deleted.
+            Remove(itemToDelete);
+            SaveChanges();
+            return new ObjectResult(itemToDelete);
+        }
     }
 }

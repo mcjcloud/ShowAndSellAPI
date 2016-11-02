@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using ShowAndSellAPI.Models.Database;
 using ShowAndSellAPI.Models;
+using ShowAndSellAPI.Models.Http;
+using Microsoft.AspNetCore.Hosting;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,23 +17,25 @@ namespace ShowAndSellAPI.Controllers
     public class ItemsController : Controller
     {
         private readonly SSDbContext _context;
+        private readonly IHostingEnvironment _environment;
 
-        public ItemsController(SSDbContext context)
+        public ItemsController(SSDbContext context, IHostingEnvironment env)
         {
             _context = context;
+            _environment = env;
         }
 
         // GET: api/items
         [HttpGet]
-        public IEnumerable<SSItem> Query([FromQuery]string query, [FromQuery]string groupId)
+        public IEnumerable<SSItem> Query([FromQuery]string name, [FromQuery]string groupId)
         {
             // if group id is specified
-            if(groupId != null)
+            if(groupId != null && groupId != "")
             {
                 // group id and query
-                if(query != null)
+                if(name != null && name != "")
                 {
-                    return _context.GetItems(query, groupId);
+                    return _context.GetItems(name, groupId);
                 }
                 // just groupid
                 else
@@ -40,13 +44,13 @@ namespace ShowAndSellAPI.Controllers
                 }
             }
             // just query
-            else if(query != null)
+            else if(name != null && name != "")
             {
-                return _context.SearchItems(query);
+                return _context.SearchItems(name);
             }
             
-            // all of them are null.
-            return null;
+            // all of them are null, return all items.
+            return _context.Items.ToArray();
         }
 
         // GET api/items/id
@@ -58,20 +62,23 @@ namespace ShowAndSellAPI.Controllers
 
         // POST api/values create a new item
         [HttpPost]
-        public void Post([FromBody]SSItem item)
+        public IActionResult CreateItem([FromBody]SSItem item)
         {
+            return _context.AddItem(item);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult UpdateItem(string id, [FromBody]UpdateItemRequest request)
         {
+            return _context.UpdateItem(id, request);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(string id, [FromQuery]string ownerPassword)
         {
+            return _context.DeleteItem(id, ownerPassword);
         }
     }
 }

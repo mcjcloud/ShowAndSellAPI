@@ -13,4 +13,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <Value>Server=localhost;Database=showandselldb;Trusted_Connection=True;</Value>
     </DestinationConnectionStrings>
   </ItemGroup>
+  <ItemGroup>
+    <File Include="Controllers/ItemsController.cs">
+      <publishTime>10/28/2016 15:36:22</publishTime>
+    </File>
+  </ItemGroup>
 </Project>

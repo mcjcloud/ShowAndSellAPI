@@ -31,7 +31,7 @@ namespace ShowAndSellAPI.Controllers
 
         // GET: api/groups
         [HttpGet]
-        public IEnumerable<SSGroup> Query(string name)
+        public IEnumerable<SSGroup> Query([FromQuery]string name)
         {
             // check if name is specified
             if (name != null)
@@ -67,9 +67,9 @@ namespace ShowAndSellAPI.Controllers
 
         // DELETE api/group/id
         [HttpDelete("{id}")]
-        public IActionResult DeleteGroup(string id, [FromBody]DeleteGroupRequest groupRequest)
+        public IActionResult DeleteGroup(string id, [FromQuery]string adminPassword)
         {
-            return _context.DeleteGroup(id, groupRequest);
+            return _context.DeleteGroup(id, adminPassword);
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -19,21 +15,23 @@
             text-align: center;
         }
 
-        @* class for a category div *@
+        /* <!-- @* class for a category div *@ --> */
         .category {
             background-color: #109EE2;
             padding: 1px;
             padding-left: 5px;
             padding-right: 5px;
-            width: 80%;
-            padding-bottom: 5px;
+            width: 90%;
+            padding-bottom: 25px;
             margin-bottom: 10px;
 
             color: white;
             text-align: left;
+
+            border-radius: 25px;
         }
 
-        @* class for specific method *@
+        /* <!-- @* class for specific method *@ --> */
         .methods {
             width: 100%;
             background-color: #6DC5F0;
@@ -49,7 +47,7 @@
 
             table-layout: fixed;
 
-            font-size: 11pt;
+            font-size: 10pt;
         }
         .table td {
             width: 25%;
@@ -83,24 +81,27 @@
             white-space: -pre-wrap;      /* Opera 4-6 */
             white-space: -o-pre-wrap;    /* Opera 7 */
             word-wrap: break-word;       /* Internet Explorer 5.5+ */
+
+            font-family: "Courier New", Courier, monospace;
+            font-size: 10pt;
         }
     </style>
 </head>
 
 <body style="background-color:#02496C; margin:0px;">
-    @* The title *@
+    <!-- @* The title *@ -->
     <div class="title">
         <h2>Show &amp; Sell Documentation</h2>
     </div>
 
     <br />
 
-    @* div to seperate the data from the title. *@
+    <!-- @* div to seperate the data from the title. *@ -->
     <div style="margin: auto;" align="center">
-        @* The Group Methods div *@
+        <!-- @* The Group Methods div *@ -->
         <div class="category">
             <h4>Group Methods</h4>
-            @* methods for groups *@
+            <!-- @* methods for groups *@ -->
             <div class="methods">
                 <table class="table">
                     <tr style="background-color: #6DC5F0">
@@ -120,17 +121,17 @@
                     </tr>
                     <tr>
                         <td>GET</td>
-                        <td>/api/groups?name={name of group}</td>
+                        <td>/api/groups?name={name of group}/</td>
                         <td>N/A</td>
-                        <td>Returns an array with 0-1 elements if the name matches a group in the database.</td>
-                        <td>GET /showandsell/api/groups?name=My Group</td>
+                        <td>Returns an array of groups whose names match the query.</td>
+                        <td>GET /showandsell/api/groups?name=My Group/</td>
                     </tr>
                     <tr>
                         <td>GET</td>
-                        <td>/api/groups?id={GUID}</td>
+                        <td>/api/groups/{GUID of group}/</td>
                         <td>N/A</td>
                         <td>Returns a group with the specified id</td>
-                        <td>GET /showandsell/api/groups?id=9e64bdd0-4de4</td>
+                        <td>GET /showandsell/api/groups/9e64bdd0-4de4/</td>
                     </tr>
                     <tr>
                         <td>POST</td>
@@ -162,7 +163,7 @@ POST /api/groups/
                     </tr>
                     <tr>
                         <td>PUT</td>
-                        <td>/api/groups/</td>
+                        <td>/api/groups/{GUID of group}/</td>
                         <td>
 <pre>
 {
@@ -174,7 +175,7 @@ POST /api/groups/
                         <td>Updates a group with the new name.</td>
                         <td>
 <pre>
-PUT /api/groups?id=5ac56db2-f323
+PUT /api/groups/5ac56db2-f323/
 {
     "newName":"Group Name 2",
     "password":"password2"
@@ -184,23 +185,10 @@ PUT /api/groups?id=5ac56db2-f323
                     </tr>
                     <tr>
                         <td>DELETE</td>
-                        <td>/api/groups?id={id of group to delete}</td>
-                        <td>
-<pre>
-{
-    "password":"password of group admin"
-}
-</pre>
-                        </td>
+                        <td>/api/groups/{GUID of group}?adminPassword={password of group}/</td>
+                        <td>N/A</td>
                         <td>Deletes a group and all of its contents.</td>
-                        <td>
-<pre>
-DELETE /api/groups?id=5ac56db2-f323
-{
-    "password":"adminpassword"
-}
-</pre>
-                        </td>
+                        <td>DELETE showandsell/api/groups/5ac56db2-f323?adminPassword=myPassword/</td>
                     </tr>
                 </table>
             </div>
@@ -208,10 +196,10 @@ DELETE /api/groups?id=5ac56db2-f323
 
         <br />
 
-        @* Users category *@
+        <!-- @* Users category *@ -->
         <div class="category">
             <h4>User Methods</h4>
-            @* methods for users. *@
+            <!-- @* methods for users. *@ -->
             <div class="methods">
                 <table class="table">
                     <tr style="background-color: #6DC5F0">
@@ -224,94 +212,221 @@ DELETE /api/groups?id=5ac56db2-f323
 
                     <tr>
                         <td>GET</td>
-                        <td>/api/groups/</td>
+                        <td>/api/users?adminPass={developer password}/</td>
                         <td>N/A</td>
-                        <td>Returns an array of all the Groups in JSON format.</td>
-                        <td>GET showandsell/api/groups/</td>
+                        <td>Returns an array of all the Users in JSON format.</td>
+                        <td>GET showandsell/api/users?adminPass=securePassword/</td>
                     </tr>
                     <tr>
                         <td>GET</td>
-                        <td>/api/groups?name={name of group}</td>
+                        <td>/api/users?name={name of user}/</td>
                         <td>N/A</td>
-                        <td>Returns an array with 0-1 elements if the name matches a group in the database.</td>
-                        <td>GET /showandsell/api/groups?name=My Group</td>
+                        <td>Returns an array of the users whose names match the query</td>
+                        <td>GET /showandsell/api/users?name=Brayden Cloud/</td>
                     </tr>
                     <tr>
                         <td>GET</td>
-                        <td>/api/groups?id={GUID}</td>
+                        <td>/api/users?username={username}&password={user password}/</td>
                         <td>N/A</td>
-                        <td>Returns a group with the specified id</td>
-                        <td>GET /showandsell/api/groups?id=9e64bdd0-4de4-4cc7-8a8c-81b9032c6447</td>
+                        <td>Returns the user with the given username if the password is correct.</td>
+                        <td>GET /showandsell/api/users?username=user123&password=pass/</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/users/{GUID of user}?password={user password}/</td>
+                        <td>N/A</td>
+                        <td>Returns the user with the given id if the password is correct.</td>
+                        <td>GET /showandsell/api/users/5ac56db2-f323?password=mypass/</td>
                     </tr>
                     <tr>
                         <td>POST</td>
-                        <td>/api/groups/</td>
+                        <td>/api/users/</td>
                         <td>
 <pre>
 {
-    "group": {
-        "name":"Group Name",
-        "admin":"GUID"
-    },
-    "password":"adminpassword"
+    "username":"your username",
+    "password":"your password",
+    "firstName":"your first name",
+    "lastName":"Your last name",
+    "email":"your email"
 }
 </pre>
                         </td>
-                        <td>Adds a group to the database if the group name isn't taken, the admin doesn't already have a group, and the adminpass is correct.</td>
+                        <td>Adds a user to the database if the username, email, and password is valid.</td>
                         <td>
 <pre>
-POST /api/groups/
+POST /api/users/
 {
-    "group": {
-        "name":"My Cool Group",
-        "admin":"5ac56db2-f323-4bb0-b910-6e4021a572ac"
-    },
-    "password":"cantguessthis123"
+  "username":"braybray",
+  "password":"imsocool",
+  "firstName":"Brayden",
+  "lastName":"Cloud",
+  "email":"braydencloud@email.com"
 }
 </pre>
                         </td>
                     </tr>
                     <tr>
                         <td>PUT</td>
-                        <td>/api/groups/</td>
+                        <td>/api/users/{GUID of user}/</td>
                         <td>
 <pre>
 {
-    "newName":"name to change to",
-    "password":"admin password of the group"
+    "newUsername":"new user name",
+    "oldPassword":"current password",
+    "newPassword":"the password to change to",
+    "newFirstName":"the first name to change to (put current name if no change)",
+    "newLastName":"the new last name (use current if no change)",
+    "newEmail":"new email (use current if no change)"
 }
 </pre>
                         </td>
-                        <td>Updates a group with the new name.</td>
+                        <td>Updates a user with the new information.</td>
                         <td>
 <pre>
-PUT /api/groups?id=5ac56db2-f323-4bb0-b910-6e4021a572ac
+PUT /api/users/5ac56db2-f323/
 {
-    "newName":"Group Name 2",
-    "password":"password2"
+  "newUsername":"brayden.cloud",
+  "oldPassword":"imsocool",
+  "newPassword":"moresecure",
+  "newFirstName":"Tom",
+  "newLastName":"Cloud",
+  "newEmail":"brayden.cloud@email.com"
 }
 </pre>
                         </td>
                     </tr>
                     <tr>
                         <td>DELETE</td>
-                        <td>/api/groups?id={id of group to delete}</td>
+                        <td>/api/users/{GUID of user}?password={user password}</td>
+                        <td>N/A</td>
+                        <td>Deletes a user and its group (if it has one) if the password is correct.</td>
+                        <td>DELETE /api/users/5ac56db2-f323?password=imsocool/</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <br />
+
+        <!-- Category for item methods -->
+        <div class="category">
+            <h4>Item Methods</h4>
+            <!-- @* methods for items. *@ -->
+            <div class="methods">
+                <table class="table">
+                    <tr style="background-color: #6DC5F0">
+                        <th align="left"><h3><b>Method</b></h3></th>
+                        <th align="left"><h3><b>Path</b></h3></th>
+                        <th align="left"><h3><b>Body</b></h3></th>
+                        <th align="left"><h3><b>Description</b></h3></th>
+                        <th align="left"><h3><b>Example</b></h3></th>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/items?name={name of item}&groupId={GUID of group to search within}/</td>
+                        <td>N/A</td>
+                        <td>Returns an array of items in the specified group, matching the name.</td>
+                        <td>GET showandsell/api/items?name=hat&groupId=5ac56db2-f323/</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/items?groupId={GUID of group to find items from}/</td>
+                        <td>N/A</td>
+                        <td>Return all the items in the specified group.</td>
+                        <td>GET /showandsell/api/items?groupId=5ac56db2-f323/</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/items?name={name of an item to search}/</td>
+                        <td>N/A</td>
+                        <td>Returns all items matching the name.</td>
+                        <td>GET /showandsell/api/items?name=baseball/</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/items/</td>
+                        <td>N/A</td>
+                        <td>Returns all items.</td>
+                        <td>GET /showandsell/api/items/</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/api/items/{GUID of item}/</td>
+                        <td>N/A</td>
+                        <td>Returns the item with the GUID given.</td>
+                        <td>GET /showandsell/api/users/5ac56db2-f323/</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td>/api/items/</td>
                         <td>
 <pre>
 {
-    "password":"password of group admin"
+    "groupId":"id of group it belongs to",
+    "ownerId":"id of the user posting it",
+    "name":"the title of the item",
+    "price":"the price of the item (in decimal format)",
+    "condition":"the item's condition",
+    "description":"a short description of the item",
+    "thumbnail":"thumbnail image SERIALIZED"
 }
 </pre>
                         </td>
-                        <td>Deletes a group and all of its contents.</td>
+                        <td>Adds a new item with the given data. NOTE: the image must be serialized to 
+                        store in the database. This means for android, you will probably have to extend an
+                        image class and implement serializable (if not already).</td>
                         <td>
 <pre>
-DELETE /api/groups?id=5ac56db2-f323-4bb0-b910-6e4021a572ac
+POST /api/items/
 {
-    "password":"adminpassword"
+    "groupId":"5ac56db2-f323",
+    "ownerId":"asdfwer1-3asd",
+    "name":"Baseball bat",
+    "price":"5.00",
+    "condition":"Used, minor scuffs",
+    "description":"wooden baseball bat, signed by Babe Ruth",
+    "thumbnail":"(insert really long string that makes up an image.)"
 }
 </pre>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td>/api/items/{GUID of item}/</td>
+                        <td>
+<pre>
+{
+    "ownerPassword":"the password of the item's owner or the admin of the group it's in",
+    "newName":"the name to replace with",
+    "newPrice":"the new price (in decimal format)",
+    "newCondition":"the new condition of the item",
+    "newDescription":"new description of item",
+    "newThumbnail":"the new thumbnail (see item POST for more detail)"
+}
+</pre>
+                        </td>
+                        <td>Updates an item with the new information.</td>
+                        <td>
+<pre>
+PUT /api/items/5ac56db2-f323/
+{
+    "ownerPassword":"passpass",
+    "newName":"Baseball glove",
+    "newPrice":"7.00",
+    "newCondition":"New",
+    "newDescription":"Never used before glove.",
+    "newThumbnail":"(a new long string of image)"
+}
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td>/api/items/{GUID of item}?ownerPassword={owner password}</td>
+                        <td>N/A</td>
+                        <td>Deletes an item if the password is correct.</td>
+                        <td>DELETE /api/items/5ac56db2-f323?ownerPassword=imsocool/</td>
                     </tr>
                 </table>
             </div>
