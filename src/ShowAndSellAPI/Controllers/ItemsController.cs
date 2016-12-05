@@ -69,9 +69,9 @@ namespace ShowAndSellAPI.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public IActionResult UpdateItem(string id, [FromBody]UpdateItemRequest request)
+        public IActionResult UpdateItem(string id, [FromBody]UpdateItemRequest request, [FromQuery]string groupOwnerPassword)
         {
-            return _context.UpdateItem(id, request);
+            return _context.UpdateItem(id, request, groupOwnerPassword);
         }
 
         // DELETE api/values/5

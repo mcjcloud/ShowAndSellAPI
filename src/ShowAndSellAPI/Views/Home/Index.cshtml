@@ -393,7 +393,7 @@ POST /api/items/
                     </tr>
                     <tr>
                         <td>PUT</td>
-                        <td>/api/items/{GUID of item}/</td>
+                        <td>/api/items/{GUID of item}?groupOwnerPassword={password of the group owner.}/</td>
                         <td>
 <pre>
 {
@@ -409,7 +409,7 @@ POST /api/items/
                         <td>Updates an item with the new information.</td>
                         <td>
 <pre>
-PUT /api/items/5ac56db2-f323/
+PUT /api/items/5ac56db2-f323?groupOwnerPassword=GroupOwnerPass/
 {
     "ownerPassword":"passpass",
     "newName":"Baseball glove",

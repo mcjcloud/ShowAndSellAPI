@@ -304,6 +304,7 @@ namespace ShowAndSellAPI.Models.Database
 
             // finalize the item and add it to the database.
             item.SSItemId = Guid.NewGuid().ToString();
+            item.Approved = false;
             Items.Add(item);
             SaveChanges();
 
@@ -313,9 +314,13 @@ namespace ShowAndSellAPI.Models.Database
         }
 
         // update an item
-        public IActionResult UpdateItem(string id, UpdateItemRequest itemRequest)
+        public IActionResult UpdateItem(string id, UpdateItemRequest itemRequest, string ownerPassword)
         {
             SSItem itemToUpdate = Items.Where(e => e.SSItemId == id).FirstOrDefault();
+
+            // check ownerPassword
+            string pass = Users.Where(e => e.SSUserId == itemToUpdate.OwnerId).FirstOrDefault().Password;
+            if (pass != ownerPassword) return new StatusCodeResult(403);
 
             // check if fields are filled out.
             bool valid = itemRequest.NewName != null && itemRequest.NewPrice != null && itemRequest.NewCondition != null && itemRequest.NewDescription != null && itemRequest.NewThumbnail != null;
