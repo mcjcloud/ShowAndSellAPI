@@ -34,7 +34,7 @@ namespace ShowAndSellAPI.Controllers
             return _context.CreateBookmark(userId, item);
         }
 
-        [HttpDelete]
+        [HttpDelete("{bookmarkId}")]
         public IActionResult DeleteBookmark(string bookmarkId)
         {
             return _context.DeleteBookmark(bookmarkId);
