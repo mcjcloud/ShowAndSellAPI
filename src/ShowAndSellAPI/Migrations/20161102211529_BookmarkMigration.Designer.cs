@@ -8,9 +8,10 @@ using ShowAndSellAPI.Models.Database;
 namespace ShowAndSellAPI.Migrations
 {
     [DbContext(typeof(SSDbContext))]
-    partial class SSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161102211529_BookmarkMigration")]
+    partial class BookmarkMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
@@ -49,8 +50,6 @@ namespace ShowAndSellAPI.Migrations
             modelBuilder.Entity("ShowAndSellAPI.Models.SSItem", b =>
                 {
                     b.Property<string>("SSItemId");
-
-                    b.Property<bool>("Approved");
 
                     b.Property<string>("Condition");
 

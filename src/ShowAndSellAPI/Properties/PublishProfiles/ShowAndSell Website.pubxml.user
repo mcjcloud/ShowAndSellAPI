@@ -14,6 +14,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </DestinationConnectionStrings>
   </ItemGroup>
   <ItemGroup>
+    <File Include="Controllers/BookmarksController.cs">
+      <publishTime>11/06/2016 15:03:38</publishTime>
+    </File>
     <File Include="Controllers/ItemsController.cs">
       <publishTime>10/28/2016 15:36:22</publishTime>
     </File>
