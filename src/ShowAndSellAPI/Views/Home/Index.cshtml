@@ -460,7 +460,14 @@ PUT /api/items/5ac56db2-f323?groupOwnerPassword=GroupOwnerPass/
 {
     "userId":"{userId of owner}",
     "ssItem":{
-        {refer to item docs}
+        "ssItemId":"id of the item",
+        "groupId":"id of group it belongs to",
+        "ownerId":"id of the user posting it",
+        "name":"the title of the item",
+        "price":"the price of the item (in decimal format)",
+        "condition":"the item's condition",
+        "description":"a short description of the item",
+        "thumbnail":"thumbnail image SERIALIZED"
     }
 }
 </pre>
