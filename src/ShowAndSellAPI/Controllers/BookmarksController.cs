@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ShowAndSellAPI.Models.Database;
 using ShowAndSellAPI.Models;
+using ShowAndSellAPI.Models.Http;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,9 +30,9 @@ namespace ShowAndSellAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateBookmark([FromQuery]string userId, [FromBody]SSItem item)
+        public IActionResult CreateBookmark([FromBody] AddBookmarkRequest request)
         {
-            return _context.CreateBookmark(userId, item);
+            return _context.CreateBookmark(request.UserId, request.ItemId);
         }
 
         [HttpDelete("{bookmarkId}")]

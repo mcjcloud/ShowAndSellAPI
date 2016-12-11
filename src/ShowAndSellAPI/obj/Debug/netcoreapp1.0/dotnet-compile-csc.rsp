@@ -215,6 +215,7 @@
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSItem.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSUser.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Database\SSDbContext.cs"
+"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\AddBookmarkRequest.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\AddGroupRequest.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\GetBookmarkResponse.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\UpdateGroupRequest.cs"

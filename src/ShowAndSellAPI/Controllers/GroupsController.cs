@@ -31,10 +31,15 @@ namespace ShowAndSellAPI.Controllers
 
         // GET: api/groups
         [HttpGet]
-        public IEnumerable<SSGroup> Query([FromQuery]string name)
+        public IEnumerable<SSGroup> Query([FromQuery]string name, [FromQuery]string ownerId)
         {
+            // check ownerId and password
+            if(ownerId != null)
+            {
+                return new SSGroup[] { _context.GetGroupByOwnerId(ownerId) };
+            }
             // check if name is specified
-            if (name != null)
+            else if (name != null)
             {
                 return new SSGroup[] { _context.GetGroupByName(name) };
             }

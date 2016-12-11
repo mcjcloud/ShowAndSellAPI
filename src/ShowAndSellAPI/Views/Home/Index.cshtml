@@ -128,6 +128,13 @@
                     </tr>
                     <tr>
                         <td>GET</td>
+                        <td>/api/groups?ownerId={GUID of group admin}</td>
+                        <td>N/A</td>
+                        <td>Returns an array of all the Groups in JSON format.</td>
+                        <td>GET showandsell/api/groups/</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
                         <td>/api/groups/{GUID of group}/</td>
                         <td>N/A</td>
                         <td>Returns a group with the specified id</td>
@@ -161,6 +168,7 @@ POST /api/groups/
 </pre>
                         </td>
                     </tr>
+
                     <tr>
                         <td>PUT</td>
                         <td>/api/groups/{GUID of group}/</td>
@@ -459,16 +467,7 @@ PUT /api/items/5ac56db2-f323?groupOwnerPassword=GroupOwnerPass/
 <pre>
 {
     "userId":"{userId of owner}",
-    "ssItem":{
-        "ssItemId":"id of the item",
-        "groupId":"id of group it belongs to",
-        "ownerId":"id of the user posting it",
-        "name":"the title of the item",
-        "price":"the price of the item (in decimal format)",
-        "condition":"the item's condition",
-        "description":"a short description of the item",
-        "thumbnail":"thumbnail image SERIALIZED"
-    }
+    "itemId":"{id of item to bookmark}"
 }
 </pre>
                         </td>
@@ -480,15 +479,7 @@ PUT /api/items/5ac56db2-f323?groupOwnerPassword=GroupOwnerPass/
 POST /api/bookmarks/
 {
     "userId":"mcjcloud",
-    "ssItem":{
-        "groupId":"5ac56db2-f323",
-        "ownerId":"asdfwer1-3asd",
-        "name":"Baseball bat",
-        "price":"5.00",
-        "condition":"Used, minor scuffs",
-        "description":"wooden baseball bat, signed by Babe Ruth",
-        "thumbnail":"(insert really long string that makes up an image.)"
-    }
+    "ssItem":"234526-asffda"
 }
 </pre>
                         </td>

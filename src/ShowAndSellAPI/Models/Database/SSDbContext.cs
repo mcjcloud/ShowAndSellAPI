@@ -44,6 +44,11 @@ namespace ShowAndSellAPI.Models.Database
         {
             return Groups.Where(e => e.Name == name).FirstOrDefault();
         }
+        // get group by ownerId
+        public SSGroup GetGroupByOwnerId(string ownerId)
+        {
+            return Groups.Where(e => e.Admin == ownerId).FirstOrDefault();
+        }
 
         // add a group to the database
         public IActionResult AddGroup(AddGroupRequest groupRequest)
@@ -414,15 +419,23 @@ namespace ShowAndSellAPI.Models.Database
         }
 
         // create a bookmark
-        public IActionResult CreateBookmark(string userId, SSItem bookmarkedItem)
+        public IActionResult CreateBookmark(string userId, string itemId)
         {
-            SSBookmark bookmarkToAdd = new SSBookmark
+            SSItem bookmarkedItem = Items.Where(e => e.SSItemId == itemId).FirstOrDefault();
+            SSBookmark bookmarkToAdd;
+            if (bookmarkedItem != null)
             {
-                SSBookmarkId = Guid.NewGuid().ToString(),
-                itemId = bookmarkedItem.SSItemId,
-                userId = userId
-            };
-
+                bookmarkToAdd = new SSBookmark
+                {
+                    SSBookmarkId = Guid.NewGuid().ToString(),
+                    itemId = bookmarkedItem.SSItemId,
+                    userId = userId
+                };
+            }
+            else
+            {
+                return new StatusCodeResult(422);
+            }
             Bookmarks.Add(bookmarkToAdd);
             SaveChanges();
 
