@@ -405,12 +405,12 @@ POST /api/items/
                         <td>
 <pre>
 {
-    "ownerPassword":"the password of the item's owner or the admin of the group it's in",
     "newName":"the name to replace with",
     "newPrice":"the new price (in decimal format)",
     "newCondition":"the new condition of the item",
     "newDescription":"new description of item",
-    "newThumbnail":"the new thumbnail (see item POST for more detail)"
+    "newThumbnail":"the new thumbnail (see item POST for more detail)",
+    "approved":boolean
 }
 </pre>
                         </td>
@@ -419,12 +419,12 @@ POST /api/items/
 <pre>
 PUT /api/items/5ac56db2-f323?groupOwnerPassword=GroupOwnerPass/
 {
-    "ownerPassword":"passpass",
     "newName":"Baseball glove",
     "newPrice":"7.00",
     "newCondition":"New",
     "newDescription":"Never used before glove.",
-    "newThumbnail":"(a new long string of image)"
+    "newThumbnail":"(a new long string of image)",
+    "approved":true
 }
 </pre>
                         </td>

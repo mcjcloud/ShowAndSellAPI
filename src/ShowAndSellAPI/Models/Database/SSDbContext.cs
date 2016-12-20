@@ -322,20 +322,16 @@ namespace ShowAndSellAPI.Models.Database
         public IActionResult UpdateItem(string id, UpdateItemRequest itemRequest, string ownerPassword)
         {
             SSItem itemToUpdate = Items.Where(e => e.SSItemId == id).FirstOrDefault();
-
-            // check ownerPassword
-            string pass = Users.Where(e => e.SSUserId == itemToUpdate.OwnerId).FirstOrDefault().Password;
+            
+            // check if password is correct
+            SSGroup group = Groups.Where(e => e.SSGroupId == itemToUpdate.GroupId).FirstOrDefault();
+            SSUser admin = Users.Where(e => e.SSUserId == group.Admin).FirstOrDefault();
+            string pass = admin.Password;
             if (pass != ownerPassword) return new StatusCodeResult(403);
 
             // check if fields are filled out.
             bool valid = itemRequest.NewName != null && itemRequest.NewPrice != null && itemRequest.NewCondition != null && itemRequest.NewDescription != null && itemRequest.NewThumbnail != null;
             if (!valid) return new StatusCodeResult(449);
-
-            // check if password is correct
-            SSGroup group = Groups.Where(e => e.SSGroupId == itemToUpdate.GroupId).FirstOrDefault();
-            SSUser admin = Users.Where(e => e.SSUserId == group.Admin).FirstOrDefault();
-            SSUser owner = Users.Where(e => e.SSUserId == itemToUpdate.OwnerId).FirstOrDefault();
-            if (owner.Password != itemRequest.OwnerPassword && admin.Password != itemRequest.OwnerPassword) return new UnauthorizedResult();
 
             // set item properties
             itemToUpdate.Name = itemRequest.NewName;
@@ -343,6 +339,7 @@ namespace ShowAndSellAPI.Models.Database
             itemToUpdate.Condition = itemRequest.NewCondition;
             itemToUpdate.Description = itemRequest.NewDescription;
             itemToUpdate.Thumbnail = itemRequest.NewThumbnail;
+            itemToUpdate.Approved = itemRequest.Approved;
 
             // update and save changes
             Update(itemToUpdate);
