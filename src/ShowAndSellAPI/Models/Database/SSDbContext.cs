@@ -368,50 +368,26 @@ namespace ShowAndSellAPI.Models.Database
         /*
          *  CRUD METHODS FOR BOOKMARKS
          */
-        
-        // get all bookmarks for a user with password
-        public IActionResult GetBookmarks(string userId, string password)
-        {
-            // get the requested user
-            SSUser user = Users.Where(e => e.SSUserId == userId && e.Password == password).FirstOrDefault();
-            if(user == null)
-            {
-                // return unauthenticated
-                return new StatusCodeResult(401);
-            }
-
-            // get the items for the given bookmarks
-            SSBookmark[] bookmarks = Bookmarks.Where(e => e.userId == user.SSUserId).ToArray();
-
-            // return the bookmarks if no error
-            return new ObjectResult(bookmarks);
-        }
         public IActionResult GetBookmarkedItems(string userId, string password)
         {
-            // get a list of all bookmarks
-            IEnumerable<SSBookmark> bookmarks = GetBookmarks(userId, password) as IEnumerable<SSBookmark>;
+            // get bookmarks
+            IEnumerable<SSBookmark> bookmarks = Bookmarks.Where(e => e.UserId == userId).ToArray();
+            if (bookmarks == null || bookmarks.Count() < 1) return new NotFoundResult();
 
-            // get a list of item ids
-            string[] itemIds = new string[bookmarks.Count()];
-            foreach(var bookmark in bookmarks)
+            // get the bookmarked items
+            GetBookmarkResponse[] responses = new GetBookmarkResponse[bookmarks.Count()];
+            for (int i = 0; i < bookmarks.Count(); i++)
             {
-                itemIds.Append(bookmark.itemId);
+                SSItem item = Items.Where(e => e.SSItemId == bookmarks.ElementAt(i).ItemId).FirstOrDefault();
+                //return new ObjectResult(item);
+                responses[i] = new GetBookmarkResponse
+                {
+                    BookmarkId = bookmarks.ElementAt(i).SSBookmarkId,
+                    Item = item
+                };
             }
 
-            // get a list of items based on ItemIds
-            SSItem[] items = new SSItem[bookmarks.Count()];
-            foreach (var id in itemIds)
-            {
-                items.Append(Items.Where(e => e.SSItemId == id).FirstOrDefault());
-            }
-
-            // create a list of GetBookmarkResponse with data
-            GetBookmarkResponse[] responses = new GetBookmarkResponse[items.Count()];
-            foreach(var item in items)
-            {
-                responses.Append(new GetBookmarkResponse { BookmarkId = bookmarks.Where(e => e.itemId == item.SSItemId).FirstOrDefault().SSBookmarkId, Item = item });
-            }
-
+            // return the responses
             return new ObjectResult(responses);
         }
 
@@ -425,8 +401,8 @@ namespace ShowAndSellAPI.Models.Database
                 bookmarkToAdd = new SSBookmark
                 {
                     SSBookmarkId = Guid.NewGuid().ToString(),
-                    itemId = bookmarkedItem.SSItemId,
-                    userId = userId
+                    ItemId = bookmarkedItem.SSItemId,
+                    UserId = userId
                 };
             }
             else

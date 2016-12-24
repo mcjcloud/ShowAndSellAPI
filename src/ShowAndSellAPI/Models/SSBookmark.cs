@@ -11,7 +11,7 @@ namespace ShowAndSellAPI.Models
         [Key]
         public string SSBookmarkId { get; set; }
 
-        public string userId { get; set; }
-        public string itemId { get; set; }
+        public string UserId { get; set; }
+        public string ItemId { get; set; }
     }
 }

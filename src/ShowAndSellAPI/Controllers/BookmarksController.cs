@@ -30,7 +30,7 @@ namespace ShowAndSellAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateBookmark([FromBody] AddBookmarkRequest request)
+        public IActionResult CreateBookmark([FromBody]AddBookmarkRequest request)
         {
             return _context.CreateBookmark(request.UserId, request.ItemId);
         }
