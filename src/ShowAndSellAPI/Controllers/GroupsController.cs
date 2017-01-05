@@ -16,7 +16,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace ShowAndSellAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class GroupsController : Controller
     {
         // Properties
@@ -28,53 +28,127 @@ namespace ShowAndSellAPI.Controllers
             _context = context;
         }
 
-
-        // GET: api/groups
+        // /api/groups/allgroups
+        // GET all Groups on the server.
         [HttpGet]
-        public IEnumerable<SSGroup> Query([FromQuery]string name, [FromQuery]string ownerId)
+        public IActionResult AllGroups()
         {
-            // check ownerId and password
-            if(ownerId != null)
+            IEnumerable<SSGroup> groups = _context.Groups.ToArray();
+            if (groups != null) return new ObjectResult(groups);
+            else return NotFound("No Groups found.");
+        }
+        // /api/groups/group?id={group id}
+        // GET a group with the given Group ID.
+        [HttpGet]
+        public IActionResult Group([FromQuery]string id)
+        {
+            SSGroup group = _context.Groups.Where(e => e.SSGroupId.Equals(id)).FirstOrDefault();
+            if(group != null)
             {
-                return new SSGroup[] { _context.GetGroupByOwnerId(ownerId) };
+                return new ObjectResult(group);
             }
-            // check if name is specified
-            else if (name != null)
+            else    // group not found
             {
-                return new SSGroup[] { _context.GetGroupByName(name) };
+                return NotFound("Group with id " + id + " not found.");
             }
-
-            return _context.GetGroups();
+        }
+        // /api/groups/search
+        // GET an array of Groups whose names contain the given string.
+        [HttpGet]
+        public IActionResult Search([FromQuery]string name)
+        {
+            IEnumerable<SSGroup> groups = _context.Groups.Where(e => e.Name.Contains(name)).ToArray();
+            if (groups != null && groups.Count() > 0) return new ObjectResult(groups);
+            else return NotFound("No groups containing the name " + name + " found.");
         }
 
-        // GET api/groups/id
-        [HttpGet("{id}", Name = "GetGroup")]
-        public IActionResult GetGroup(string id)
-        {
-            return new ObjectResult(_context.GetGroup(id));
-        }
-
-        // POST api/groups
-        // TODO: make sure this works with authentication
+        // /api/groups/create
+        // POST a new Group to the server.
         [HttpPost]
-        public IActionResult CreateGroup([FromBody]AddGroupRequest groupRequest)
+        public IActionResult Create([FromBody]AddGroupRequest groupRequest)
         {
-            return _context.AddGroup(groupRequest);
+            if (groupRequest == null) return BadRequest("Missing or invalid body");
+
+            // if no admin was specified.
+            // bool is if there is insufficient data entered.
+            bool invalidRequest = groupRequest.Group.Admin == null || groupRequest.Group.Admin == "" || groupRequest.Group.Name == null || groupRequest.Group.Name == "" || groupRequest.Password == null;
+            if (invalidRequest) return StatusCode(449, "Some fields missing or invalid.");
+
+            // check if user exists
+            SSUser admin = _context.Users.Where(e => e.SSUserId == groupRequest.Group.Admin).FirstOrDefault();
+            if (admin == null) return NotFound("Error creating group. Admin with ID " + groupRequest.Group.Admin + " not found.");
+
+            // check password
+            string realPassword = admin.Password;
+            if (groupRequest.Password != realPassword) return Unauthorized();
+
+            // check if group name is taken, or if admin already has a group.
+            foreach (SSGroup group in _context.Groups.ToArray())
+            {
+                if (group.Admin == admin.SSUserId) return BadRequest("Group under admin " + admin.Username + " already exists.");
+                if (group.Name == groupRequest.Group.Name) return BadRequest("Group with name " + groupRequest.Group.Name + " already exists.");
+            }
+
+            // add the group to the database.
+            groupRequest.Group.SSGroupId = Guid.NewGuid().ToString();
+            groupRequest.Group.DateCreated = DateTime.Now;
+            _context.Groups.Add(groupRequest.Group);
+            _context.SaveChanges();
+
+            return new ObjectResult(groupRequest.Group);
         }
 
-        // PUT api/groups/id update a group in the database
-        // TODO: make sure this method works (have to add users first).
-        [HttpPut("{id}")]
-        public IActionResult UpdateGroup(string id, [FromBody]UpdateGroupRequest groupRequest)
+        // /api/groups/update?id={group id}
+        // PUT a Group in the server with the new data.
+        [HttpPut]
+        public IActionResult Update([FromQuery]string id, [FromBody]UpdateGroupRequest groupRequest)
         {
-            return _context.UpdateGroup(id, groupRequest);
+            SSGroup groupToUpdate = _context.Groups.Where(e => e.SSGroupId == id).FirstOrDefault();
+            SSUser admin = _context.Users.Where(e => e.SSUserId == groupToUpdate.Admin).FirstOrDefault();
+            if (groupToUpdate == null || admin == null) return NotFound("The group requested could not be accessed.");
+
+            // authenticate/authorize
+            if (admin.Password != groupRequest.Password) return Unauthorized();
+
+            // check if group name is taken, or if admin already has a group.
+            foreach (SSGroup group in _context.Groups.ToArray())
+            {
+                if (group.Admin == admin.SSUserId) return BadRequest("Group with admin " + admin.Username + " already exists.");
+                if (group.Name == groupRequest.NewName) return BadRequest("Group with name " + groupRequest.NewName + " already exists.");
+            }
+
+            groupToUpdate.Name = groupRequest.NewName;
+            _context.Update(groupToUpdate);
+            _context.SaveChanges();
+            return new ObjectResult(groupToUpdate);
         }
 
-        // DELETE api/group/id
-        [HttpDelete("{id}")]
-        public IActionResult DeleteGroup(string id, [FromQuery]string adminPassword)
+        // /api/groups/delete?id={group id}&password={admin password}
+        // DELETE a Group from the server.
+        [HttpDelete]
+        public IActionResult Delete([FromQuery]string id, [FromQuery]string password)
         {
-            return _context.DeleteGroup(id, adminPassword);
+            SSGroup groupToDelete = _context.Groups.Where(e => e.SSGroupId == id).FirstOrDefault();
+            SSUser admin = _context.Users.Where(e => e.SSUserId == groupToDelete.Admin).FirstOrDefault();
+
+            if (groupToDelete == null || admin == null) return NotFound("The group with ID " + id + " was not found.");
+            if (admin.Password == null) return Unauthorized();
+
+            // if not authorized, return 403
+            if (admin.Password != password) return Unauthorized();
+
+            // check for items to delete.
+            IList<SSItem> items = _context.Items.Where(e => e.GroupId == groupToDelete.SSGroupId).ToList();
+            foreach (SSItem item in items)
+            {
+                _context.Remove(item);
+            }
+
+            // remove the group
+            _context.Remove(groupToDelete);
+            _context.SaveChanges();
+            // returned the removed group
+            return new ObjectResult(groupToDelete);
         }
     }
 }

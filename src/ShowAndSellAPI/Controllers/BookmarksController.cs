@@ -11,7 +11,7 @@ using ShowAndSellAPI.Models.Http;
 
 namespace ShowAndSellAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class BookmarksController : Controller
     {
         // Properties
@@ -23,22 +23,72 @@ namespace ShowAndSellAPI.Controllers
             _context = context;
         }
 
+        // /api/bookmarks/bookmarks
+        // GET Bookmarks with the given User ID and password.
         [HttpGet]
-        public IActionResult GetBookmarks([FromQuery]string userId, [FromQuery]string password)
+        public IActionResult Bookmarks([FromQuery]string userId, [FromQuery]string password)
         {
-            return _context.GetBookmarkedItems(userId, password);
+            // get bookmarks
+            IEnumerable<SSBookmark> bookmarks = _context.Bookmarks.Where(e => e.UserId == userId).ToArray();
+            if (bookmarks == null || bookmarks.Count() < 1) return NotFound("Bookmarks for User with ID " + userId + " not found.");
+
+            // get the bookmarked items
+            GetBookmarkResponse[] responses = new GetBookmarkResponse[bookmarks.Count()];
+            for (int i = 0; i < bookmarks.Count(); i++)
+            {
+                SSItem item = _context.Items.Where(e => e.SSItemId == bookmarks.ElementAt(i).ItemId).FirstOrDefault();
+                //return new ObjectResult(item);
+                responses[i] = new GetBookmarkResponse
+                {
+                    BookmarkId = bookmarks.ElementAt(i).SSBookmarkId,
+                    Item = item
+                };
+            }
+
+            // return the responses
+            return new ObjectResult(responses);
         }
 
         [HttpPost]
-        public IActionResult CreateBookmark([FromBody]AddBookmarkRequest request)
+        public IActionResult Create([FromQuery]string userId, [FromQuery]string itemId)
         {
-            return _context.CreateBookmark(request.UserId, request.ItemId);
+            // check user
+            SSUser user = _context.Users.Where(e => e.SSUserId.Equals(userId)).FirstOrDefault();
+            if (user == null) return NotFound("User with ID " + userId + " not found.");
+
+            SSItem bookmarkedItem = _context.Items.Where(e => e.SSItemId == itemId).FirstOrDefault();
+            SSBookmark bookmarkToAdd;
+            if (bookmarkedItem != null)
+            {
+                bookmarkToAdd = new SSBookmark
+                {
+                    SSBookmarkId = Guid.NewGuid().ToString(),
+                    ItemId = bookmarkedItem.SSItemId,
+                    UserId = userId
+                };
+            }
+            else
+            {
+                return NotFound("Item with id " + itemId + " not found.");
+            }
+            _context.Bookmarks.Add(bookmarkToAdd);
+            _context.SaveChanges();
+
+            // return the bookmarked item.
+            return new ObjectResult(bookmarkToAdd);
         }
 
-        [HttpDelete("{bookmarkId}")]
-        public IActionResult DeleteBookmark(string bookmarkId)
+        [HttpDelete]
+        public IActionResult DeleteBookmark([FromQuery]string id)
         {
-            return _context.DeleteBookmark(bookmarkId);
+            SSBookmark bookmark = _context.Bookmarks.Where(e => e.SSBookmarkId.Equals(id)).FirstOrDefault();
+            if (bookmark == null) return NotFound("Bookmark with ID " + id + " not found.");
+
+            _context.Remove(bookmark);
+            _context.SaveChanges();
+
+            // return the deleted bookmark.
+            return new ObjectResult(bookmark);
         }
     }
 }
