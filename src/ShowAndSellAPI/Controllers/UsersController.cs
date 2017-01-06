@@ -190,10 +190,10 @@ namespace ShowAndSellAPI.Controllers
             return new ObjectResult(user);
         }
         
-        // /api/users/delete
+        // /api/users/delete?id={user id}&password={user password}
         // DELETE a User from the server (deletes Group and Items in that group).
         [HttpDelete]
-        public IActionResult Delete([FromQuery]string id, string password)
+        public IActionResult Delete([FromQuery]string id, [FromQuery]string password)
         {
             SSUser userToDelete = _context.Users.Where(e => e.SSUserId == id).FirstOrDefault();
             if (userToDelete == null) return NotFound("The user could not be found.");

@@ -6,6 +6,15 @@
     <title>Docs</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".dropDown").slideUp();
+
+            $(".method").on('click', function () {
+                $(this).children(".dropDown").slideToggle();
+            });
+        });
+    </script>
 
     <style>
         h1 {
@@ -14,6 +23,13 @@
         body {
             background-color: #4caf50;
         }
+        table {
+            width: 100%;
+        }
+        table, td, th {
+            background-color: beige;
+            border: double 2px;
+        }
 
         @* All of the documentation *@
         .docs {
@@ -21,25 +37,46 @@
             background-color: #dec961;
             
             margin: auto;
-            width: 50%;
+            padding: 1px;
+            width: 75%;
         }
 
         @* encapsulating controller *@
         .controller {
             margin: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 1px;
 
             background-color: #4caf50;
         }
 
         @* a method *@
         .method {
-            padding: 0.1px;
-            background-color: #BCA639;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 2px;
+            padding-bottom: 2px;
         }
 
         @* represents a drop down item. *@
         .dropDown {
-            
+            background-color: inherit;
+            font-size: 14px;
+        }
+
+        .alignRight {
+            float: right;
+        }
+        .alignLeft {
+            float: left;
+        }
+
+        .controller .method:nth-child(odd) {
+            background-color: #97821A;
+        }
+        .controller .method:nth-child(even) {
+            background-color: #BCA639; 
         }
     </style>
 </head>
@@ -50,10 +87,333 @@
 
         <div class="controller" >
             <h2>Users</h2>
-            <div class="method">
-                <p>AllUsers</p>
+            <div class="method" id="AllUsers">
+                <p class="alignLeft">GET AllUsers</p>
+                <p class="alignRight">GET all Users if the devPassword is correct.</p>
+                <div style="clear: both;"></div>
                 <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/users/allusers?devPassword={dev password}</p>
+                    <div style="clear: both;"></div>
 
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <td>Code</td>
+                            <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>No Users found</td>
+                        </tr>
+                        <tr>
+                            <td>401</td>
+                            <td>The provided password was incorrect</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>Request successful, returns the Users a json array</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="method" id="Search">
+                <p class="alignLeft">GET Search</p>
+                <p class="alignRight">GET all Users (excluding passwords) matching the given name.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/users/search?name={name}</p>
+                    <div style="clear: both;"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <td>Code</td>
+                            <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>No Users found with given name</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>Found Users matching, returned as a json array of Users (no passwords)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="method" id="UserByUsername">
+                <p class="alignLeft">GET UserByUsername</p>
+                <p class="alignRight">GET a User with the given username and password.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/users/userbyusername?username={username}&password={user password}</p>
+                    <div style="clear: both"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <td>Code</td>
+                            <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>No Users found with given username</td>
+                        </tr>
+                        <tr>
+                            <td>401</td>
+                            <td>Password given does not match username</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>Found User, returned User as json</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="method" id="UserByUserId">
+                <p class="alignLeft">GET UserByUserId</p>
+                <p class="alignRight">GET a User with the given User ID and password.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/users/userbyuserid?id={user id}&password={user password}</p>
+                    <div style="clear: both"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <td>Code</td>
+                            <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>No Users found with given User ID</td>
+                        </tr>
+                        <tr>
+                            <td>401</td>
+                            <td>Password given does not match User ID</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>Found User, returned User as json</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="method" id="Create">
+                <p class="alignLeft">POST Create</p>
+                <p class="alignRight">POST a User to the server.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/users/create</p>
+                    <div style="clear: both"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>username</td>
+                            <td>(string) the username of new user.</td>
+                        </tr>
+                        <tr>
+                            <td>password</td>
+                            <td>(string) the password of the new user</td>
+                        </tr>
+                        <tr>
+                            <td>firstName</td>
+                            <td>(string) new user's first name</td>
+                        </tr>
+                        <tr>
+                            <td>lastName</td>
+                            <td>(string) the new user's last name</td>
+                        </tr>
+                        <tr>
+                            <td>email</td>
+                            <td>(string) the new user's email</td>
+                        </tr>
+                    </table>
+
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <td>Code</td>
+                            <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>449</td>
+                            <td>Some fields missing or invalid. Username in use. Email in use. Password invalid.</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>User created. User object returned as json.</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+            <div class="method" id="Update">
+                <p class="alignLeft">PUT Update</p>
+                <p class="alignRight">PUT a User with the updated data.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/users/update?id={user id}</p>
+                    <div style="clear: both"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>newUsername</td>
+                            <td>(string) the new username of user.</td>
+                        </tr>
+                        <tr>
+                            <td>oldPassword</td>
+                            <td>(string) the user's old password</td>
+                        </tr>
+                        <tr>
+                            <td>newPassword</td>
+                            <td>(string) the new password of the user</td>
+                        </tr>
+                        <tr>
+                            <td>newFirstName</td>
+                            <td>(string) user's new first name</td>
+                        </tr>
+                        <tr>
+                            <td>newLastName</td>
+                            <td>(string) the user's new last name</td>
+                        </tr>
+                        <tr>
+                            <td>newEmail</td>
+                            <td>(string) the user's new email</td>
+                        </tr>
+                    </table>
+
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <td>Code</td>
+                            <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>User not found with given ID</td>
+                        </tr>
+                        <tr>
+                            <td>449</td>
+                            <td>Fields missing or invalid. new password is the same as old password.</td>
+                        </tr>
+                        <tr>
+                            <td>401</td>
+                            <td>Old password is incorrect.</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>User updated. User object returned as json.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="method" id="Delete">
+                <p class="alignLeft">DELETE Delete</p>
+                <p class="alignRight">DELETE a User from the server (deletes Group and Items in that group).</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/users/delete?id={user id}&password={user password}</p>
+                    <div style="clear: both;"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <td>Code</td>
+                            <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>No User found with given ID</td>
+                        </tr>
+                        <tr>
+                            <td>401</td>
+                            <td>The provided password was incorrect</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>Deleted successfully. Returns deleted User as a json.</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
