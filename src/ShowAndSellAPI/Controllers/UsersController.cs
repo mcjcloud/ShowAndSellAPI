@@ -224,6 +224,12 @@ namespace ShowAndSellAPI.Controllers
             IEnumerable<SSItem> itemsToDelete = _context.Items.Where(e => e.GroupId.Equals(groupId)).ToArray();
             foreach(var item in itemsToDelete)
             {
+                // remove bookmarks.
+                foreach (var bookmark in _context.Bookmarks.Where(e => e.ItemId.Equals(item.SSItemId)).ToArray())
+                {
+                    _context.Remove(bookmark);
+                }
+
                 _context.Remove(item);
             }
 

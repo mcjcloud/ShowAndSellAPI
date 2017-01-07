@@ -34,7 +34,7 @@ namespace ShowAndSellAPI.Controllers
         public IActionResult AllGroups()
         {
             IEnumerable<SSGroup> groups = _context.Groups.ToArray();
-            if (groups != null) return new ObjectResult(groups);
+            if (groups != null && groups.Count() > 0) return new ObjectResult(groups);
             else return NotFound("No Groups found.");
         }
         // /api/groups/group?id={group id}
@@ -105,7 +105,8 @@ namespace ShowAndSellAPI.Controllers
         {
             SSGroup groupToUpdate = _context.Groups.Where(e => e.SSGroupId == id).FirstOrDefault();
             SSUser admin = _context.Users.Where(e => e.SSUserId == groupToUpdate.Admin).FirstOrDefault();
-            if (groupToUpdate == null || admin == null) return NotFound("The group requested could not be accessed.");
+            if (groupToUpdate == null) return NotFound("Group not found.");
+            if (admin == null) return NotFound("Admin not found.");
 
             // authenticate/authorize
             if (admin.Password != groupRequest.Password) return Unauthorized();
@@ -129,18 +130,24 @@ namespace ShowAndSellAPI.Controllers
         public IActionResult Delete([FromQuery]string id, [FromQuery]string password)
         {
             SSGroup groupToDelete = _context.Groups.Where(e => e.SSGroupId == id).FirstOrDefault();
+            if (groupToDelete == null) return NotFound("Group not found.");
+
             SSUser admin = _context.Users.Where(e => e.SSUserId == groupToDelete.Admin).FirstOrDefault();
+            if (admin == null) return NotFound("Admin not found.");
 
-            if (groupToDelete == null || admin == null) return NotFound("The group with ID " + id + " was not found.");
-            if (admin.Password == null) return Unauthorized();
-
-            // if not authorized, return 403
+            // if not authorized, return 401
             if (admin.Password != password) return Unauthorized();
 
             // check for items to delete.
             IList<SSItem> items = _context.Items.Where(e => e.GroupId == groupToDelete.SSGroupId).ToList();
             foreach (SSItem item in items)
             {
+                // remove bookmarks.
+                foreach (var bookmark in _context.Bookmarks.Where(e => e.ItemId.Equals(item.SSItemId)).ToArray())
+                {
+                    _context.Remove(bookmark);
+                }
+
                 _context.Remove(item);
             }
 

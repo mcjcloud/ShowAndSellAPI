@@ -23,7 +23,7 @@ namespace ShowAndSellAPI.Controllers
             _context = context;
         }
 
-        // /api/bookmarks/bookmarks
+        // /api/bookmarks/bookmarks?userId={user id}&password={user password}
         // GET Bookmarks with the given User ID and password.
         [HttpGet]
         public IActionResult Bookmarks([FromQuery]string userId, [FromQuery]string password)
@@ -49,6 +49,8 @@ namespace ShowAndSellAPI.Controllers
             return new ObjectResult(responses);
         }
 
+        // /api/bookmarks/create?userId={user id}&itemId={id of item to bookmark}
+        // POST a new bookmark.
         [HttpPost]
         public IActionResult Create([FromQuery]string userId, [FromQuery]string itemId)
         {
@@ -78,8 +80,10 @@ namespace ShowAndSellAPI.Controllers
             return new ObjectResult(bookmarkToAdd);
         }
 
+        // /api/bookmarks/delete?id={bookmark id}
+        // DELETE a Bookmark.
         [HttpDelete]
-        public IActionResult DeleteBookmark([FromQuery]string id)
+        public IActionResult Delete([FromQuery]string id)
         {
             SSBookmark bookmark = _context.Bookmarks.Where(e => e.SSBookmarkId.Equals(id)).FirstOrDefault();
             if (bookmark == null) return NotFound("Bookmark with ID " + id + " not found.");
