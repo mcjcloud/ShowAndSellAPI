@@ -19,6 +19,7 @@ namespace ShowAndSellAPI.Models.Database
         public DbSet<SSUser> Users { get; set; }
         public DbSet<SSItem> Items { get; set; }
         public DbSet<SSBookmark> Bookmarks { get; set; }
+        public DbSet<SSMessage> Messages { get; set; }
 
         // Constructor
         public SSDbContext(DbContextOptions<SSDbContext> options) : base(options) { }

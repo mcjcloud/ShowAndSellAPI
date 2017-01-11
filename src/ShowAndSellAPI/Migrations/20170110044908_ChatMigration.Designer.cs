@@ -8,9 +8,10 @@ using ShowAndSellAPI.Models.Database;
 namespace ShowAndSellAPI.Migrations
 {
     [DbContext(typeof(SSDbContext))]
-    partial class SSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170110044908_ChatMigration")]
+    partial class ChatMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")

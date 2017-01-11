@@ -9,5 +9,7 @@ namespace ShowAndSellAPI.Models.Http
     {
         public string NewName { get; set; }         // the new name for the group
         public string Password { get; set; }        // the password of the admin (to authenticate the request).
+        public string NewLocation { get; set; }
+        public string NewLocationDetail { get; set; }
     }
 }

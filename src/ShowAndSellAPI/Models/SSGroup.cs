@@ -18,7 +18,9 @@ namespace ShowAndSellAPI.Models
         public string Name { get; set; }
 
         // data to be accessed by GUID
-        public string Admin { get; set; }
+        public string AdminId { get; set; }
+        public string Location { get; set; }
+        public string LocationDetail { get; set; }
 
         // extra properties
         public DateTime DateCreated { get; set; }

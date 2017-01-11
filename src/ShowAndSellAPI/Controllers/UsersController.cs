@@ -121,7 +121,7 @@ namespace ShowAndSellAPI.Controllers
         [HttpPost]
         public IActionResult Create([FromBody]SSUser user)
         {
-            bool fieldsFilled = (user.Username != null && user.Password != null && user.FirstName != null && user.LastName != null && user.Email != null);
+            bool fieldsFilled = (user.Username.Count() > 0 && user.Password.Count() > 0 && user.FirstName.Count() > 0 && user.LastName.Count() > 0 && user.Email.Count() > 0);
             if (!fieldsFilled) return StatusCode(449, "Some fields are missing or invalid.");
 
             // check if username or email already exists
@@ -150,12 +150,12 @@ namespace ShowAndSellAPI.Controllers
             SSUser user = _context.Users.Where(e => e.SSUserId == id).FirstOrDefault();
             if (user == null) return NotFound("User with User ID " + id + " not found.");
 
-            bool fieldsFilled = updateRequest.NewUsername != null
-                && updateRequest.NewPassword != null
-                && updateRequest.OldPassword != null
-                && updateRequest.NewFirstName != null
-                && updateRequest.NewLastName != null
-                && updateRequest.NewEmail != null;
+            bool fieldsFilled = updateRequest.NewUsername.Count() > 0
+                && updateRequest.NewPassword.Count() > 0
+                && updateRequest.OldPassword.Count() > 0
+                && updateRequest.NewFirstName.Count() > 0
+                && updateRequest.NewLastName.Count() > 0
+                && updateRequest.NewEmail.Count() > 0;
 
             // if any of the fields aren't filled
             if (!fieldsFilled)
@@ -200,7 +200,7 @@ namespace ShowAndSellAPI.Controllers
             if (userToDelete.Password != password) return Unauthorized();
 
             // check and delete a group that the user is admin of.
-            SSGroup groupToDelete = _context.Groups.Where(e => e.Admin == userToDelete.SSUserId).FirstOrDefault();
+            SSGroup groupToDelete = _context.Groups.Where(e => e.AdminId == userToDelete.SSUserId).FirstOrDefault();
             if (groupToDelete != null)
             {
                 // request group delete.
@@ -228,6 +228,11 @@ namespace ShowAndSellAPI.Controllers
                 foreach (var bookmark in _context.Bookmarks.Where(e => e.ItemId.Equals(item.SSItemId)).ToArray())
                 {
                     _context.Remove(bookmark);
+                }
+                // remove chat
+                foreach (var message in _context.Messages.Where(e => e.ItemId.Equals(item.SSItemId)).ToArray())
+                {
+                    _context.Remove(message);
                 }
 
                 _context.Remove(item);
