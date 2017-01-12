@@ -228,6 +228,8 @@
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20161205213333_ApprovedMigration.Designer.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170110044908_ChatMigration.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170110044908_ChatMigration.Designer.cs"
+"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170112020208_UserGroupIdMigration.cs"
+"C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170112020208_UserGroupIdMigration.Designer.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\SSDbContextModelSnapshot.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSBookmark.cs"
 "C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSGroup.cs"
