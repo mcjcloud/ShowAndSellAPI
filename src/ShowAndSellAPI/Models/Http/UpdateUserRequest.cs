@@ -11,6 +11,7 @@ namespace ShowAndSellAPI.Models.Http
 
         public string OldPassword { get; set; }
         public string NewPassword { get; set; }
+        public string NewGroupId { get; set; }
 
         public string NewFirstName { get; set; }
         public string NewLastName { get; set; }

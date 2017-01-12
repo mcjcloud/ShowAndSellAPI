@@ -265,7 +265,7 @@ namespace ShowAndSellAPI.Controllers
             SSUser groupAdmin = _context.Users.Where(e => e.SSUserId == itemGroup.AdminId).FirstOrDefault();
             // check authentication (owner password or poster's password.
             if (owner.Password != password && groupAdmin.Password != password) return Unauthorized();
-
+        
             // remove bookmarks.
             foreach(var bookmark in _context.Bookmarks.Where(e => e.ItemId.Equals(itemToDelete.SSItemId)).ToArray()) 
             {

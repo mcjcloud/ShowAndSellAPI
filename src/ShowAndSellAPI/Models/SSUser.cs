@@ -12,6 +12,7 @@ namespace ShowAndSellAPI.Models
         // Properties
         [Key]
         public string SSUserId { get; set; }
+        public string GroupId { get; set; }
 
         public string Username { get; set; }
         public string Password { get; set; }

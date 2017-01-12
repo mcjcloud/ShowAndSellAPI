@@ -135,6 +135,14 @@ namespace ShowAndSellAPI.Controllers
             var regex = new Regex("[a-zA-Z0-9]");
             if (!regex.IsMatch(user.Password)) return StatusCode(449, "Password cannot have special characters.");
 
+            // check groupId
+            if (user.GroupId != null && user.GroupId.Count() > 0)
+            {
+                // try to find the group
+                SSGroup group = _context.Groups.Where(e => e.SSGroupId.Equals(user.GroupId)).FirstOrDefault();
+                if (group == null) return NotFound("Group not found.");
+            }
+
             user.SSUserId = Guid.NewGuid().ToString();
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -176,12 +184,21 @@ namespace ShowAndSellAPI.Controllers
             var regex = new Regex("[a-zA-Z0-9]");
             if (!regex.IsMatch(updateRequest.NewPassword)) return StatusCode(449, "Password cannot have special characters.");
 
+            // check groupId
+            if (updateRequest.NewGroupId != null && updateRequest.NewGroupId.Count() > 0)
+            {
+                // try to find the group
+                SSGroup group = _context.Groups.Where(e => e.SSGroupId.Equals(updateRequest.NewGroupId)).FirstOrDefault();
+                if (group == null) return NotFound("Group not found.");
+            }
+
             // update the userdata
             user.Username = updateRequest.NewUsername;
             user.Password = updateRequest.NewPassword;
             user.FirstName = updateRequest.NewFirstName;
             user.LastName = updateRequest.NewLastName;
             user.Email = updateRequest.NewEmail;
+            user.GroupId = updateRequest.NewGroupId;
 
             // save changes
             _context.Update(user);

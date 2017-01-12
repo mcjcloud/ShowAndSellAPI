@@ -288,6 +288,10 @@
                             <td>email</td>
                             <td>(string) the new user's email</td>
                         </tr>
+                        <tr>
+                            <td>groupId</td>
+                            <td>(string) the ID of the group this user is associated with.</td>
+                        </tr>
                     </table>
 
                     <p>Responses</p>
@@ -295,6 +299,10 @@
                         <tr>
                             <td>Code</td>
                             <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>Group not found.</td>
                         </tr>
                         <tr>
                             <td>449</td>
@@ -348,6 +356,10 @@
                             <td>newEmail</td>
                             <td>(string) the user's new email</td>
                         </tr>
+                        <tr>
+                            <td>newGroupId</td>
+                            <td>(string) the ID of the new group this User is associated with</td>
+                        </tr>
                     </table>
 
                     <p>Responses</p>
@@ -358,7 +370,7 @@
                         </tr>
                         <tr>
                             <td>404</td>
-                            <td>User not found with given ID</td>
+                            <td>User not found with given ID. Group not found.</td>
                         </tr>
                         <tr>
                             <td>449</td>
