@@ -173,8 +173,8 @@ namespace ShowAndSellAPI.Controllers
             // check if username or email already exists
             foreach (var _user in _context.Users.ToArray())
             {
-                if (_user.Username.Equals(updateRequest.NewUsername)) return StatusCode(449, "Username already in use.");
-                if (_user.Email.Equals(updateRequest.NewEmail)) return StatusCode(449, "Email already in use.");
+                if (_user.Username.Equals(updateRequest.NewUsername) && !_user.Username.Equals(user.Username)) return StatusCode(449, "Username already in use.");
+                if (_user.Email.Equals(updateRequest.NewEmail) && !_user.Email.Equals(user.Email)) return StatusCode(449, "Email already in use.");
             }
 
             // check password

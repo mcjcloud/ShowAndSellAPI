@@ -13,6 +13,7 @@ using MailKit.Net.Smtp;
 using System.Security.Cryptography.X509Certificates;
 using Google.Apis.Auth.OAuth2;
 using System.Threading;
+using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -293,6 +294,7 @@ namespace ShowAndSellAPI.Controllers
             var emailMessage = new MimeMessage();
             
             emailMessage.From.Add(new MailboxAddress("ShowAndSell", "showandsellmail@gmail.com"));
+            Debug.WriteLine("EMAIL ADDRESS: " + email);
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
             emailMessage.Body = new TextPart("plain") { Text = message };

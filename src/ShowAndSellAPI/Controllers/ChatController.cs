@@ -29,6 +29,13 @@ namespace ShowAndSellAPI.Controllers
             SSItem item = _context.Items.Where(e => e.SSItemId.Equals(itemId)).FirstOrDefault();
             if (item == null) return NotFound("Item with ID " + itemId + " not found.");
 
+            // get group the item is in (for AdminId/name)
+            SSGroup group = _context.Groups.Where(e => e.SSGroupId.Equals(item.GroupId)).FirstOrDefault();
+            if (group == null) return NotFound("Item's group not found.");
+
+            // get Admin
+            SSUser admin = _context.Users.Where(e => e.SSUserId == group.AdminId).FirstOrDefault();
+
             IEnumerable<SSMessage> messages = _context.Messages.Where(e => e.ItemId.Equals(item.SSItemId)).ToArray();
             if (messages == null || messages.Count() <= 0) return NotFound("No Messages associated with the given Item.");
 
@@ -43,6 +50,8 @@ namespace ShowAndSellAPI.Controllers
                     ItemId = message.ItemId,
                     PosterId = message.PosterId,
                     PosterName = poster.FirstName + " " + poster.LastName,
+                    AdminId = admin.SSUserId,
+                    AdminName = admin.FirstName + " " + admin.LastName,
                     DatePosted = message.DatePosted,
                     Body = message.Body
                 };
