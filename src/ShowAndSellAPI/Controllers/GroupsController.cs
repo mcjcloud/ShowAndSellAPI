@@ -271,6 +271,11 @@ namespace ShowAndSellAPI.Controllers
                 {
                     _context.Remove(message);
                 }
+                // remove groupId from user
+                foreach (var user in _context.Users.Where(e => e.GroupId.Equals(groupToDelete.SSGroupId)))
+                {
+                    user.GroupId = "";
+                }
 
                 _context.Remove(item);
             }

@@ -58,6 +58,15 @@ namespace ShowAndSellAPI.Controllers
             SSUser user = _context.Users.Where(e => e.SSUserId.Equals(userId)).FirstOrDefault();
             if (user == null) return NotFound("User with ID " + userId + " not found.");
 
+            // check if user has already bookmarked item
+            foreach (var bookmark in _context.Bookmarks.ToArray())
+            {
+                if (bookmark.ItemId.Equals(itemId) && bookmark.UserId.Equals(userId))
+                {
+                    return StatusCode(409, "Bookmark already exists for this user.");
+                }
+            }
+
             SSItem bookmarkedItem = _context.Items.Where(e => e.SSItemId == itemId).FirstOrDefault();
             SSBookmark bookmarkToAdd;
             if (bookmarkedItem != null)

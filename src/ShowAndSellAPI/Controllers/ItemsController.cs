@@ -195,6 +195,8 @@ namespace ShowAndSellAPI.Controllers
             SSItem itemToBuy = _context.Items.Where(e => e.SSItemId.Equals(id)).FirstOrDefault();
             if (itemToBuy == null) return NotFound("Item with ID " + id + " not found.");
 
+            if (!itemToBuy.Approved) return BadRequest("Item not available for purchase.");
+
             // get the Group Admin
             SSGroup group = _context.Groups.Where(e => e.SSGroupId.Equals(itemToBuy.GroupId)).FirstOrDefault();
             if (group == null) return NotFound("Could not load the group this item is a member of.");
