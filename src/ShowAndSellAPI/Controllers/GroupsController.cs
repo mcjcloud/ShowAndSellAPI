@@ -77,21 +77,36 @@ namespace ShowAndSellAPI.Controllers
         [HttpGet]
         public IActionResult GroupsInRadius([FromQuery]float radius, [FromQuery]double latitude, [FromQuery]double longitude)
         {
+            // convert to radians.
+            latitude = latitude * 0.0174533;
+            longitude = longitude * 0.0174533;
+
             // conversion
             double latConst = 69.172;
-            double latMiles = latitude * latConst;
-            double longMiles = Math.Cos(latitude) * latConst;
+            double latMiles = latitude * latConst;                          // 2276.463946
+            double longMiles = Math.Cos(latitude) * latConst * longitude; // -5648.650814
+
+            Debug.WriteLine("cos(lat): " + Math.Cos(latitude));
+            Debug.WriteLine("latMiles: " + latMiles + " longMiles: " + longMiles);
 
             // assemble a list of the groups
             List<SSGroup> groupsInRadius = new List<SSGroup>();
             foreach(var group in _context.Groups.ToArray())
             {
-                // lat/long to miles
-                double groupLatMiles = group.Latitude * latConst;
-                double groupLongMiles = Math.Cos(group.Latitude) * latConst;
+                // convert to radians.
+                group.Latitude = group.Latitude * 0.0174533;
+                group.Longitude = group.Longitude * 0.0174533;
 
-                // pathagrian therom for distance between.
+                // lat/long to miles
+                double groupLatMiles = group.Latitude * latConst;                                   // 2275.270487
+                double groupLongMiles = (Math.Cos(group.Latitude) * latConst) * group.Longitude;    // -5651.243445
+
+                Debug.WriteLine("cos(groupLat): " + Math.Cos(group.Latitude));
+                Debug.WriteLine("groupLat: " + groupLatMiles + " groupLong: " + groupLongMiles);
+
+                // pythagorean therom for distance between.
                 double distance = Math.Abs(Math.Sqrt(Math.Pow((groupLatMiles - latMiles), 2) + Math.Pow((groupLongMiles - longMiles), 2)));
+                Debug.WriteLine("distance from (" + latitude + ", " + longitude + ") to (" + group.Latitude + ", " + group.Longitude + "): " + distance);
                 // if the distance is <= the radius, append to the list.
                 if(distance <= radius)
                 {
@@ -114,7 +129,7 @@ namespace ShowAndSellAPI.Controllers
             // conversion
             double latConst = 69.172;
             double latMiles = latitude * latConst;
-            double longMiles = Math.Cos(latitude) * latConst;
+            double longMiles = (Math.Cos(latitude) * latConst) * longitude;
 
             IEnumerable<SSGroup> groups = _context.Groups.ToArray();
             if(n >= groups.Count())
@@ -129,9 +144,9 @@ namespace ShowAndSellAPI.Controllers
                 {
                     // lat/long to miles
                     double groupLatMiles = group.Latitude * latConst;
-                    double groupLongMiles = Math.Cos(group.Latitude) * latConst;
+                    double groupLongMiles = (Math.Cos(group.Latitude) * latConst) * group.Longitude;
 
-                    // pathagrian therom for distance between.
+                    // pythagorean therom for distance between.
                     double distance = Math.Abs(Math.Sqrt(Math.Pow((groupLatMiles - latMiles), 2) + Math.Pow((groupLongMiles - longMiles), 2)));
 
                     // add the group to the dic
