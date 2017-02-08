@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Net;
 using System.IO;
 using Microsoft.Win32.SafeHandles;
+using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -71,6 +72,85 @@ namespace ShowAndSellAPI.Controllers
             else return NotFound("No groups containing the name " + name + " found.");
         }
 
+        // /api/groups/groupsinradius?radius={(float) radius in miles)}&latitude={(double) latitude of source}&longitude={(double) longitude of source}
+        // GET all of the groups within a certain radius.
+        [HttpGet]
+        public IActionResult GroupsInRadius([FromQuery]float radius, [FromQuery]double latitude, [FromQuery]double longitude)
+        {
+            // conversion
+            double latConst = 69.172;
+            double latMiles = latitude * latConst;
+            double longMiles = Math.Cos(latitude) * latConst;
+
+            // assemble a list of the groups
+            List<SSGroup> groupsInRadius = new List<SSGroup>();
+            foreach(var group in _context.Groups.ToArray())
+            {
+                // lat/long to miles
+                double groupLatMiles = group.Latitude * latConst;
+                double groupLongMiles = Math.Cos(group.Latitude) * latConst;
+
+                // pathagrian therom for distance between.
+                double distance = Math.Abs(Math.Sqrt(Math.Pow((groupLatMiles - latMiles), 2) + Math.Pow((groupLongMiles - longMiles), 2)));
+                // if the distance is <= the radius, append to the list.
+                if(distance <= radius)
+                {
+                    groupsInRadius.Add(group);
+                }
+            }
+
+            // if the list is empty, return NotFound (404)
+            if (groupsInRadius.Count() <= 0) return NotFound("No groups in given radius found.");
+
+            // return the list
+            return new ObjectResult(groupsInRadius);
+        }
+
+        // /api/groups/closestgroups?n={number of groups to return}&latitude={latitude of source}&longitude={longitude of source}
+        // GET n closest groups to coordinates
+        [HttpGet]
+        public IActionResult ClosestGroups([FromQuery]int n, [FromQuery]double latitude, [FromQuery]double longitude)
+        {
+            // conversion
+            double latConst = 69.172;
+            double latMiles = latitude * latConst;
+            double longMiles = Math.Cos(latitude) * latConst;
+
+            IEnumerable<SSGroup> groups = _context.Groups.ToArray();
+            if(n >= groups.Count())
+            {
+                return new ObjectResult(groups);
+            }
+            else
+            {
+                // Hash groups with keys by distance.
+                Dictionary<double, SSGroup> groupMap = new Dictionary<double, SSGroup>();
+                foreach(var group in _context.Groups.ToArray())
+                {
+                    // lat/long to miles
+                    double groupLatMiles = group.Latitude * latConst;
+                    double groupLongMiles = Math.Cos(group.Latitude) * latConst;
+
+                    // pathagrian therom for distance between.
+                    double distance = Math.Abs(Math.Sqrt(Math.Pow((groupLatMiles - latMiles), 2) + Math.Pow((groupLongMiles - longMiles), 2)));
+
+                    // add the group to the dic
+                    groupMap.Add(distance, group);
+                }
+                List<SSGroup> closestGroups = new List<SSGroup>();
+                List<double> keysSorted = groupMap.Keys.OrderBy(dist => dist).ToList();
+                for(int i = 0; i < n; i++)
+                {
+                    SSGroup group;
+                    groupMap.TryGetValue(keysSorted.ElementAt(i), out group);
+                    if(group != null)
+                        closestGroups.Add(group);
+                }
+
+                return new ObjectResult(closestGroups);
+            }
+        }
+
         // /api/groups/create
         // POST a new Group to the server.
         [HttpPost]
@@ -80,7 +160,14 @@ namespace ShowAndSellAPI.Controllers
 
             // if no admin was specified.
             // bool is if there is insufficient data entered.
-            bool invalidRequest = groupRequest.Group.AdminId == null || groupRequest.Group.AdminId == "" || groupRequest.Group.Name == null || groupRequest.Group.Name == "" || groupRequest.Password == null || groupRequest.Group.Location == "" || groupRequest.Group.Location == null || groupRequest.Group.LocationDetail == "" || groupRequest.Group.LocationDetail == null;
+            bool invalidRequest = groupRequest.Group.AdminId == null || 
+                groupRequest.Group.AdminId == "" || 
+                groupRequest.Group.Name == null || 
+                groupRequest.Group.Name == "" || 
+                groupRequest.Password == null ||
+                groupRequest.Group.LocationDetail == "" || 
+                groupRequest.Group.LocationDetail == null;
+
             if (invalidRequest) return StatusCode(449, "Some fields missing or invalid.");
 
             // check if user exists
@@ -91,11 +178,12 @@ namespace ShowAndSellAPI.Controllers
             string realPassword = admin.Password;
             if (groupRequest.Password != realPassword) return Unauthorized();
 
-            // check if group name is taken, or if admin already has a group.
-            foreach (SSGroup group in _context.Groups.ToArray())
+            // check if group name is taken, or if admin already has a group, or if lat/long is taken.
+            foreach (var group in _context.Groups.ToArray())
             {
-                if (group.AdminId == admin.SSUserId) return BadRequest("Group under admin " + admin.Username + " already exists.");
+                if (group.AdminId == admin.SSUserId) return BadRequest("Group under admin " + admin.Email + " already exists.");
                 if (group.Name == groupRequest.Group.Name) return BadRequest("Group with name " + groupRequest.Group.Name + " already exists.");
+                if (group.Latitude == groupRequest.Group.Latitude && group.Longitude == groupRequest.Group.Longitude) return BadRequest("Location already in use.");
             }
 
             // add the group to the database.
@@ -123,17 +211,18 @@ namespace ShowAndSellAPI.Controllers
             // check if group name is taken, or if admin already has a group.
             foreach (SSGroup group in _context.Groups.ToArray())
             {
-                if (group.AdminId == admin.SSUserId) return BadRequest("Group with admin " + admin.Username + " already exists.");
-                if (group.Name == groupRequest.NewName) return BadRequest("Group with name " + groupRequest.NewName + " already exists.");
+                if (group.Name == groupRequest.NewName && groupRequest.NewName != groupToUpdate.Name) return BadRequest("Group with name " + groupRequest.NewName + " already exists.");
             }
 
             // check if fields filled
-            bool valid = groupRequest.NewLocation.Count() > 0 && groupRequest.NewLocationDetail.Count() > 0 && groupRequest.NewName.Count() > 0;
+            bool valid = groupRequest.NewLocationDetail.Count() > 0 && groupRequest.NewName.Count() > 0;
+
             if (!valid) return StatusCode(449, "Some fields missing or invalid.");
 
             groupToUpdate.Name = groupRequest.NewName;
             groupToUpdate.LocationDetail = groupRequest.NewLocationDetail;
-            groupToUpdate.Location = groupRequest.NewLocation;
+            groupToUpdate.Latitude = groupRequest.NewLatitude;
+            groupToUpdate.Longitude = groupRequest.NewLongitude;
             _context.Update(groupToUpdate);
             _context.SaveChanges();
             return new ObjectResult(groupToUpdate);
@@ -177,5 +266,6 @@ namespace ShowAndSellAPI.Controllers
             // returned the removed group
             return new ObjectResult(groupToDelete);
         }
+
     }
 }

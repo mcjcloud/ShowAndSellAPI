@@ -169,13 +169,13 @@
                 </div>
             </div>
             <div class="method" id="UserByUsername">
-                <p class="alignLeft">GET UserByUsername</p>
-                <p class="alignRight">GET a User with the given username and password.</p>
+                <p class="alignLeft">GET UserByEmail</p>
+                <p class="alignRight">GET a User with the given email and password.</p>
                 <div style="clear: both;"></div>
                 <div class="dropDown">
                     <hr />
                     <p class="alignLeft">Request URL</p>
-                    <p class="alignRight">/api/users/userbyusername?username={username}&password={user password}</p>
+                    <p class="alignRight">/api/users/userbyemail?email={email}&password={user password}</p>
                     <div style="clear: both"></div>
 
                     <p>Json</p>
@@ -197,11 +197,11 @@
                         </tr>
                         <tr>
                             <td>404</td>
-                            <td>No Users found with given username</td>
+                            <td>No Users found with given email</td>
                         </tr>
                         <tr>
                             <td>401</td>
-                            <td>Password given does not match username</td>
+                            <td>Password given does not match email</td>
                         </tr>
                         <tr>
                             <td>200</td>
@@ -269,8 +269,8 @@
                             <th>Description</th>
                         </tr>
                         <tr>
-                            <td>username</td>
-                            <td>(string) the username of new user.</td>
+                            <td>email</td>
+                            <td>(string) the new user's email</td>
                         </tr>
                         <tr>
                             <td>password</td>
@@ -283,10 +283,6 @@
                         <tr>
                             <td>lastName</td>
                             <td>(string) the new user's last name</td>
-                        </tr>
-                        <tr>
-                            <td>email</td>
-                            <td>(string) the new user's email</td>
                         </tr>
                         <tr>
                             <td>groupId</td>
@@ -306,7 +302,7 @@
                         </tr>
                         <tr>
                             <td>449</td>
-                            <td>Some fields missing or invalid. Username in use. Email in use. Password invalid.</td>
+                            <td>Some fields missing or invalid. Email in use. Password invalid.</td>
                         </tr>
                         <tr>
                             <td>200</td>
@@ -333,8 +329,8 @@
                             <th>Description</th>
                         </tr>
                         <tr>
-                            <td>newUsername</td>
-                            <td>(string) the new username of user.</td>
+                            <td>newEmail</td>
+                            <td>(string) the user's new email</td>
                         </tr>
                         <tr>
                             <td>oldPassword</td>
@@ -351,10 +347,6 @@
                         <tr>
                             <td>newLastName</td>
                             <td>(string) the user's new last name</td>
-                        </tr>
-                        <tr>
-                            <td>newEmail</td>
-                            <td>(string) the user's new email</td>
                         </tr>
                         <tr>
                             <td>newGroupId</td>
@@ -1065,6 +1057,82 @@
                     </table>
                 </div>
             </div>
+            <div class="method" id="GroupsInRadius">
+                <p class="alignLeft">GET GroupsInRadius</p>
+                <p class="alignRight">GET all of the groups within a certain radius.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/groups/groupsinradius?radius={(float) radius in miles)}&latitude={(double) latitude of source}&longitude={(double) longitude of source}</p>
+                    <div style="clear: both;"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <th>Code</th>
+                            <th>Reason</th>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>No Groups in given radius</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>Groups found. Returns Groups as json array.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="method" id="ClosestGroups">
+                <p class="alignLeft">GET ClosestGroups</p>
+                <p class="alignRight">GET n closest groups to coordinates.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/groups/closestgroups?n={number of groups to return}&latitude={latitude of source}&longitude={longitude of source}</p>
+                    <div style="clear: both;"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <th>Code</th>
+                            <th>Reason</th>
+                        </tr>
+                        <tr>
+                            <td>404</td>
+                            <td>No Groups found.</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>Groups found. Returns Groups as json array.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <div class="method" id="Search">
                 <p class="alignLeft">GET Search</p>
                 <p class="alignRight">GET an array of Groups whose names contain the given string.</p>
@@ -1132,8 +1200,12 @@
                             <td>(string) the ID of the new Group's admin</td>
                         </tr>
                         <tr>
-                            <td>├─ location</td>
-                            <td>(string) the location of the exchange (coordinates or whatever)</td>
+                            <td>├─ latitude</td>
+                            <td>(double) the latitude coordinate of the location.</td>
+                        </tr>
+                        <tr>
+                            <td>├─ longitude</td>
+                            <td>(double) the longitude coordinate of the location.</td>
                         </tr>
                         <tr>
                             <td>└─ locationDetail</td>
@@ -1190,8 +1262,12 @@
                             <td>(string) the new name for the Group.</td>
                         </tr>
                         <tr>
-                            <td>newLocation</td>
-                            <td>(string) the new location for exchange.</td>
+                            <td>newLatitude</td>
+                            <td>(double) the new latitude coordinate for exchange.</td>
+                        </tr>
+                        <tr>
+                            <td>newLongitude</td>
+                            <td>(double) the new longitude coordinate for exchange.</td>
                         </tr>
                         <tr>
                             <td>newLocationDetail</td>

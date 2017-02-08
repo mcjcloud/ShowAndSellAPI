@@ -8,9 +8,10 @@ using ShowAndSellAPI.Models.Database;
 namespace ShowAndSellAPI.Migrations
 {
     [DbContext(typeof(SSDbContext))]
-    partial class SSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170201220516_NoUsernameMigration")]
+    partial class NoUsernameMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
@@ -39,11 +40,9 @@ namespace ShowAndSellAPI.Migrations
 
                     b.Property<int>("ItemsSold");
 
-                    b.Property<double>("Latitude");
+                    b.Property<string>("Location");
 
                     b.Property<string>("LocationDetail");
-
-                    b.Property<double>("Longitude");
 
                     b.Property<string>("Name");
 

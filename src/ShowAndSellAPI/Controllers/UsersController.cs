@@ -65,12 +65,12 @@ namespace ShowAndSellAPI.Controllers
                 return NotFound("No users containing the name " + name);
             }
         }
-        // /api/users/userbyusername?username={username}&password={user password}
-        // GET a User with the given username and password.
+        // /api/users/userbyemail?email={email}&password={user password}
+        // GET a User with the given email and password.
         [HttpGet]
-        public IActionResult UserByUsername([FromQuery]string username, [FromQuery]string password)
+        public IActionResult UserByEmail([FromQuery]string email, [FromQuery]string password)
         {
-            SSUser match = _context.Users.Where(e => e.Username.Equals(username)).FirstOrDefault();
+            SSUser match = _context.Users.Where(e => e.Email.Equals(email)).FirstOrDefault();
             // check if null
             if(match != null)
             {
@@ -87,7 +87,7 @@ namespace ShowAndSellAPI.Controllers
             }
             else    // the user was not found.
             {
-                return NotFound("User with username " + username + " not found.");
+                return NotFound("User with email " + email + " not found.");
             }
         }
         // /api/users/userbyuserid?id={user id}&password={user password}
@@ -121,13 +121,12 @@ namespace ShowAndSellAPI.Controllers
         [HttpPost]
         public IActionResult Create([FromBody]SSUser user)
         {
-            bool fieldsFilled = (user.Username.Count() > 0 && user.Password.Count() > 0 && user.FirstName.Count() > 0 && user.LastName.Count() > 0 && user.Email.Count() > 0);
+            bool fieldsFilled = (user.Password.Count() > 0 && user.FirstName.Count() > 0 && user.LastName.Count() > 0 && user.Email.Count() > 0);
             if (!fieldsFilled) return StatusCode(449, "Some fields are missing or invalid.");
 
-            // check if username or email already exists
+            // check if email already exists
             foreach (var _user in _context.Users.ToArray())
             {
-                if (_user.Username == user.Username) return StatusCode(449, "Username already in use.");
                 if (_user.Email == user.Email) return StatusCode(449, "Email already in use."); 
             }
 
@@ -158,8 +157,8 @@ namespace ShowAndSellAPI.Controllers
             SSUser user = _context.Users.Where(e => e.SSUserId == id).FirstOrDefault();
             if (user == null) return NotFound("User with User ID " + id + " not found.");
 
-            bool fieldsFilled = updateRequest.NewUsername.Count() > 0
-                && updateRequest.NewPassword.Count() > 0
+            bool fieldsFilled =
+                updateRequest.NewPassword.Count() > 0
                 && updateRequest.OldPassword.Count() > 0
                 && updateRequest.NewFirstName.Count() > 0
                 && updateRequest.NewLastName.Count() > 0
@@ -170,10 +169,9 @@ namespace ShowAndSellAPI.Controllers
             {
                 return StatusCode(449, "All fields must be filled (see documentation)");
             }
-            // check if username or email already exists
+            // check if email already exists
             foreach (var _user in _context.Users.ToArray())
             {
-                if (_user.Username.Equals(updateRequest.NewUsername) && !_user.Username.Equals(user.Username)) return StatusCode(449, "Username already in use.");
                 if (_user.Email.Equals(updateRequest.NewEmail) && !_user.Email.Equals(user.Email)) return StatusCode(449, "Email already in use.");
             }
 
@@ -193,7 +191,6 @@ namespace ShowAndSellAPI.Controllers
             }
 
             // update the userdata
-            user.Username = updateRequest.NewUsername;
             user.Password = updateRequest.NewPassword;
             user.FirstName = updateRequest.NewFirstName;
             user.LastName = updateRequest.NewLastName;

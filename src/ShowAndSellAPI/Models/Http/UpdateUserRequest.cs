@@ -7,8 +7,6 @@ namespace ShowAndSellAPI.Models.Http
 {
     public class UpdateUserRequest
     {
-        public string NewUsername { get; set; }
-
         public string OldPassword { get; set; }
         public string NewPassword { get; set; }
         public string NewGroupId { get; set; }
