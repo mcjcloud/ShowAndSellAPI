@@ -14,6 +14,7 @@ using System.Security.Cryptography.X509Certificates;
 using Google.Apis.Auth.OAuth2;
 using System.Threading;
 using System.Diagnostics;
+using Braintree;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,6 +25,14 @@ namespace ShowAndSellAPI.Controllers
     {
         private readonly SSDbContext _context;
         private readonly IHostingEnvironment _environment;
+
+        BraintreeGateway gateway = new BraintreeGateway
+        {
+            Environment = Braintree.Environment.SANDBOX,
+            MerchantId = "wtzxfs9zm7pb44b4",
+            PublicKey = "j3ths8zxg82drjzd",
+            PrivateKey = "2ab009256367eccc5c05fb3d5c5534bd"
+        };
 
         public ItemsController(SSDbContext context, IHostingEnvironment env)
         {
@@ -155,6 +164,14 @@ namespace ShowAndSellAPI.Controllers
                 return new ObjectResult(items);
             }
         }
+        // /api/items/paymenttoken
+        // GET a gateway token to make a purchase with
+        [HttpGet]
+        public string PaymentToken()
+        {
+            var clientToken = gateway.ClientToken.generate();
+            return clientToken;
+        }
 
         // /api/items/create
         // POST an Item
@@ -185,11 +202,11 @@ namespace ShowAndSellAPI.Controllers
             return new ObjectResult(item);
 
         }
-
+        
         // /api/items/buy?id={item id}&userId={id of customer}&password={password of customer}
         // POST buy an item.
         [HttpPost]
-        public IActionResult BuyItem([FromQuery]string id, [FromQuery]string userId, [FromQuery]string password)
+        public IActionResult BuyItem([FromQuery]string id, [FromQuery]string userId, [FromQuery]string password, [FromBody]BuyItemRequest body)
         {
             // check if item or user is null
             SSItem itemToBuy = _context.Items.Where(e => e.SSItemId.Equals(id)).FirstOrDefault();
@@ -209,14 +226,28 @@ namespace ShowAndSellAPI.Controllers
             // authenticate
             if (!customer.Password.Equals(password)) return Unauthorized();
 
+            // send purchase request
+            var request = new TransactionRequest
+            {
+                Amount = new Decimal(body.Amount),
+                PaymentMethodNonce = body.PaymentMethodNonce,
+                Options = new TransactionOptionsRequest
+                {
+                    SubmitForSettlement = true
+                }
+            };
+            Result<Transaction> result = gateway.Transaction.Sale(request);
+
             // send confirmation email.
             var task = SendMail(customer.Email, "Purchase Confirmation", "Confirming your purchase of " + itemToBuy.Name + " with ID " + itemToBuy.SSItemId + ".");
 
             // remove the Item
             Delete(itemToBuy.SSItemId, admin.Password);
 
-            return new ObjectResult(itemToBuy);
+            //return new ObjectResult(itemToBuy);
+            return new ObjectResult(result);
         }
+
 
         // /api/items/update?id={item id}&adminPassword={group admin password}
         // PUT update an Item
@@ -328,6 +359,7 @@ namespace ShowAndSellAPI.Controllers
                 */
 
                 await client.ConnectAsync("smtp.gmail.com", 465, MailKit.Security.SecureSocketOptions.SslOnConnect).ConfigureAwait(false);
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
                 await client.AuthenticateAsync("showandsellmail@gmail.com", "Brayden14").ConfigureAwait(false);
                 await client.SendAsync(emailMessage).ConfigureAwait(false);
                 await client.DisconnectAsync(true).ConfigureAwait(false);

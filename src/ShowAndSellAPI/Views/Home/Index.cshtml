@@ -730,6 +730,40 @@
                     </table>
                 </div>
             </div>
+            <div class="method" id="PaymentToken">
+                <p class="alignLeft">GET PaymentToken</p>
+                <p class="alignRight">GET a token for getting payment info and Nonce.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/items/paymenttoken</p>
+                    <div style="clear: both;"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <th>Code</th>
+                            <th>Reason</th>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>the token as a string.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <div class="method" id="BuyItem">
                 <p class="alignLeft">POST BuyItem</p>
                 <p class="alignRight">POST buy an Item with the given ID under the given userId and password.</p>
@@ -747,8 +781,16 @@
                             <th>Description</th>
                         </tr>
                         <tr>
-                            <td>No parameters</td>
-                            <td>No parameters</td>
+                            <td>token</td>
+                            <td>(string) the token from calling PaymentToken</td>
+                        </tr>
+                        <tr>
+                            <td>paymentMethodNonce</td>
+                            <td>(string) the payment method nonce (see <a href="https://developers.braintreepayments.com/start/hello-client/ios/v4">Braintree Client Docs</a>)</td>
+                        </tr>
+                        <tr>
+                            <td>amount</td>
+                            <td>(double) the price of the Item.</td>
                         </tr>
                     </table>
                     <p>Responses</p>

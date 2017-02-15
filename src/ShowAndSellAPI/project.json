@@ -20,7 +20,8 @@
     "SendGrid.NetCore": "1.0.0-rtm-00002",
     "MailKit": "1.10.1",
     "Google.Apis.Auth": "1.20.0",
-    "Google.Apis.Oauth2.v2": "1.20.0.672"
+    "Google.Apis.Oauth2.v2": "1.20.0.672",
+    "Braintree": "3.5.0"
   },
 
   "tools": {

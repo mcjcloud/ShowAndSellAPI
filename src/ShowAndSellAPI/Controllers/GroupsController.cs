@@ -90,7 +90,7 @@ namespace ShowAndSellAPI.Controllers
             Debug.WriteLine("latMiles: " + latMiles + " longMiles: " + longMiles);
 
             // assemble a list of the groups
-            List<SSGroup> groupsInRadius = new List<SSGroup>();
+            Dictionary<double, SSGroup> groupMap = new Dictionary<double, SSGroup>();
             foreach(var group in _context.Groups.ToArray())
             {
                 // convert to radians.
@@ -110,12 +110,24 @@ namespace ShowAndSellAPI.Controllers
                 // if the distance is <= the radius, append to the list.
                 if(distance <= radius)
                 {
-                    groupsInRadius.Add(group);
+                    groupMap.Add(distance, group);
                 }
             }
 
             // if the list is empty, return NotFound (404)
-            if (groupsInRadius.Count() <= 0) return NotFound("No groups in given radius found.");
+            if (groupMap.Values.Count() <= 0) return NotFound("No groups in given radius found.");
+
+            // sort groups
+            List<double> keysSorted = groupMap.Keys.OrderBy(dist => dist).ToList();
+
+            // order groups
+            List<SSGroup> groupsInRadius = new List<SSGroup>();
+            foreach(var key in keysSorted)
+            {
+                SSGroup value;
+                groupMap.TryGetValue(key, out value);
+                if (value != null) groupsInRadius.Add(value);
+            }
 
             // return the list
             return new ObjectResult(groupsInRadius);
