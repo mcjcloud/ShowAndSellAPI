@@ -19,6 +19,7 @@ namespace ShowAndSellAPI.Models
 
         // data to be accessed by GUID
         public string AdminId { get; set; }
+        public string Address { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string LocationDetail { get; set; }

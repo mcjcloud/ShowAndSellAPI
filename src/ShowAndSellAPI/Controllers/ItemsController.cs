@@ -10,9 +10,6 @@ using ShowAndSellAPI.Models.Http;
 using Microsoft.AspNetCore.Hosting;
 using MimeKit;
 using MailKit.Net.Smtp;
-using System.Security.Cryptography.X509Certificates;
-using Google.Apis.Auth.OAuth2;
-using System.Threading;
 using System.Diagnostics;
 using Braintree;
 
@@ -147,7 +144,7 @@ namespace ShowAndSellAPI.Controllers
             if (group == null) return NotFound("Group not found.");
             else
             {
-                IEnumerable<SSItem> approvedItems = _context.Items.Where(e => e.Approved);
+                IEnumerable<SSItem> approvedItems = _context.Items.Where(e => e.Approved && e.GroupId.Equals(group.SSGroupId));
                 List<SSItem> items = new List<SSItem>();
                 for (int i = begin, j = 0; i < finish; i++)
                 {
@@ -171,6 +168,21 @@ namespace ShowAndSellAPI.Controllers
         {
             var clientToken = gateway.ClientToken.generate();
             return clientToken;
+        }
+        [HttpGet]
+        public IActionResult SendReceipt([FromQuery]string id, [FromQuery]string userId)
+        {
+            var item = _context.Items.Where(e => e.SSItemId.Equals(id)).FirstOrDefault();
+            if (item == null) return NotFound("Item not found");
+
+            var user = _context.Users.Where(e => e.SSUserId.Equals(userId)).FirstOrDefault();
+            if (user == null) return NotFound("User not found.");
+
+            var group = _context.Groups.Where(e => e.SSGroupId.Equals(item.GroupId)).FirstOrDefault();
+            if (group == null) return NotFound("Group not found.");
+
+            var task =  SendMail(user, item, group);
+            return StatusCode(200, "Fake recipet sent.");
         }
 
         // /api/items/create
@@ -226,6 +238,7 @@ namespace ShowAndSellAPI.Controllers
             // authenticate
             if (!customer.Password.Equals(password)) return Unauthorized();
 
+
             // send purchase request
             var request = new TransactionRequest
             {
@@ -239,7 +252,7 @@ namespace ShowAndSellAPI.Controllers
             Result<Transaction> result = gateway.Transaction.Sale(request);
 
             // send confirmation email.
-            var task = SendMail(customer.Email, "Purchase Confirmation", "Confirming your purchase of " + itemToBuy.Name + " with ID " + itemToBuy.SSItemId + ".");
+            var task = SendMail(customer, itemToBuy, group);
 
             // remove the Item
             Delete(itemToBuy.SSItemId, admin.Password);
@@ -294,10 +307,11 @@ namespace ShowAndSellAPI.Controllers
             if (itemToDelete == null) return NotFound("Item with specified ID not found.");
 
             SSGroup itemGroup = _context.Groups.Where(e => e.SSGroupId == itemToDelete.GroupId).FirstOrDefault();
+            if (itemGroup == null) return NotFound("Item's group not found.");
 
             SSUser owner = _context.Users.Where(e => e.SSUserId == itemToDelete.OwnerId).FirstOrDefault();
             SSUser groupAdmin = _context.Users.Where(e => e.SSUserId == itemGroup.AdminId).FirstOrDefault();
-            // check authentication (owner password or poster's password.
+            // check authentication (owner password or poster's password).
             if (owner.Password != password && groupAdmin.Password != password) return Unauthorized();
         
             // remove bookmarks.
@@ -322,41 +336,36 @@ namespace ShowAndSellAPI.Controllers
         /*
          * Helper methods
          */
-         static async Task SendMail(string email, string subject, string message)
+         static async Task SendMail(SSUser user, SSItem item, SSGroup supplier)
         {
             var emailMessage = new MimeMessage();
             
             emailMessage.From.Add(new MailboxAddress("ShowAndSell", "showandsellmail@gmail.com"));
-            Debug.WriteLine("EMAIL ADDRESS: " + email);
-            emailMessage.To.Add(new MailboxAddress("", email));
-            emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart("plain") { Text = message };
+            Debug.WriteLine("EMAIL ADDRESS: " + user.Email);
+            emailMessage.To.Add(new MailboxAddress("", user.Email ));
+            emailMessage.Subject = "Purchase Confirmation";
 
-            using(var client = new SmtpClient())
+            var builder = new BodyBuilder();
+            //var cshtml = System.IO.File.ReadAllText();
+
+            /*
+            var engine = EngineFactory.CreatePhysical(@"~/Views/ItemReceipt.cshtml");
+
+            var model = new EmailModel()
             {
-                /*
-                // Get Google access token
-                var certificate = new X509Certificate2(@"C:\Users\brayd\Documents\showandsell\ShowAndSell-d3364b669a22.p12", "Brayden14", X509KeyStorageFlags.Exportable);
-                var credential = new ServiceAccountCredential(new ServiceAccountCredential.Initializer("115075227415-compute@developer.gserviceaccount.com")
-                {
-                    Scopes = new[] { "https://mail.google.com"},
-                    User = "showandsellmail@gmail.com"
-                }.FromCertificate(certificate));
+                Item = item,
+                Buyer = user,
 
-                bool result = await credential.RequestAccessTokenAsync(new CancellationToken());
+            };
+            */
 
-                //client.LocalDomain = "api.sendgrid.com";
-                //client.AuthenticationMechanisms.Remove("XOAUTH2");
-                Debug.WriteLine("removed OAuth2");
-                await client.ConnectAsync("smtp.google.com", 587, MailKit.Security.SecureSocketOptions.StartTls).ConfigureAwait(false);
-                Debug.WriteLine("connected");
-                await client.AuthenticateAsync("showandsellmail@gmail.com", "Brayden14").ConfigureAwait(false);
-                Debug.WriteLine("authenticated");
-                await client.SendAsync(emailMessage).ConfigureAwait(false);
-                Debug.WriteLine("send mail");
-                await client.DisconnectAsync(true).ConfigureAwait(false);
-                Debug.WriteLine("Disconnected");
-                */
+            //string result = engine.Parse("Test.cshtml", model);
+
+            builder.HtmlBody = "<html><body><h1>Purchase Confirmation</h1><p>Confirmation of your purchase of " + item.Name + "</p><p>with ID " + item.SSItemId + "</p></body></html>";
+            emailMessage.Body = builder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
 
                 await client.ConnectAsync("smtp.gmail.com", 465, MailKit.Security.SecureSocketOptions.SslOnConnect).ConfigureAwait(false);
                 client.AuthenticationMechanisms.Remove("XOAUTH2");

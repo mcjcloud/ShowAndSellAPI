@@ -18,6 +18,30 @@
           "lib/netstandard1.3/Braintree.dll": {}
         }
       },
+      "CoreCompat.System.Drawing/1.0.0-beta006": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Win32.Primitives": "4.0.1",
+          "System.Collections.NonGeneric": "4.0.1",
+          "System.Collections.Specialized": "4.0.1",
+          "System.ComponentModel.TypeConverter": "4.1.0",
+          "System.Drawing.Primitives": "4.0.0",
+          "System.IO.FileSystem": "4.0.1",
+          "System.Reflection.TypeExtensions": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Runtime.InteropServices": "4.1.0",
+          "System.Runtime.InteropServices.RuntimeInformation": "4.0.0",
+          "System.Text.Encoding.Extensions": "4.0.11",
+          "System.Text.RegularExpressions": "4.1.0",
+          "System.Threading": "4.0.11"
+        },
+        "compile": {
+          "lib/netstandard1.3/CoreCompat.System.Drawing.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/CoreCompat.System.Drawing.dll": {}
+        }
+      },
       "Google.Apis/1.20.0": {
         "type": "package",
         "dependencies": {
@@ -186,6 +210,114 @@
         },
         "runtime": {
           "lib/netstandard1.3/MailKit.dll": {}
+        }
+      },
+      "Microsoft.AspNet.FileProviders.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "1.0.0-rc1-final",
+          "System.IO": "4.0.11-beta-23516",
+          "System.Resources.ResourceManager": "4.0.1-beta-23516"
+        },
+        "compile": {
+          "lib/dotnet5.4/Microsoft.AspNet.FileProviders.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/Microsoft.AspNet.FileProviders.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Hosting.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final"
+        },
+        "compile": {
+          "lib/dotnet5.4/Microsoft.AspNet.Hosting.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/Microsoft.AspNet.Hosting.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Features": "1.0.0-rc1-final",
+          "Microsoft.Extensions.WebEncoders.Core": "1.0.0-rc1-final",
+          "System.Collections": "4.0.11-beta-23516",
+          "System.Diagnostics.Tools": "4.0.1-beta-23516",
+          "System.Globalization": "4.0.11-beta-23516",
+          "System.Globalization.Extensions": "4.0.1-beta-23516",
+          "System.Linq": "4.0.1-beta-23516",
+          "System.Linq.Expressions": "4.0.11-beta-23516",
+          "System.Net.Primitives": "4.0.11-beta-23516",
+          "System.Net.WebSockets": "4.0.0-beta-23516",
+          "System.Reflection.TypeExtensions": "4.0.1-beta-23409",
+          "System.Runtime": "4.0.21-beta-23516",
+          "System.Runtime.InteropServices": "4.0.21-beta-23516",
+          "System.Security.Claims": "4.0.1-beta-23516",
+          "System.Security.Cryptography.X509Certificates": "4.0.0-beta-23516",
+          "System.Security.Principal": "4.0.1-beta-23516",
+          "System.Threading.Tasks": "4.0.11-beta-23516"
+        },
+        "compile": {
+          "lib/dotnet5.4/Microsoft.AspNet.Http.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/Microsoft.AspNet.Http.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http.Extensions/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.WebEncoders.Core": "1.0.0-rc1-final",
+          "Microsoft.Net.Http.Headers": "1.0.0-rc1-final",
+          "System.IO.FileSystem": "4.0.1-beta-23516",
+          "System.Resources.ResourceManager": "4.0.1-beta-23516",
+          "System.Runtime": "4.0.21-beta-23516"
+        },
+        "compile": {
+          "lib/dotnet5.4/Microsoft.AspNet.Http.Extensions.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/Microsoft.AspNet.Http.Extensions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http.Features/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "1.0.0-rc1-final",
+          "System.Collections": "4.0.11-beta-23516",
+          "System.Linq": "4.0.1-beta-23516",
+          "System.Net.Primitives": "4.0.11-beta-23516",
+          "System.Net.WebSockets": "4.0.0-beta-23516",
+          "System.Runtime.Extensions": "4.0.11-beta-23516",
+          "System.Security.Claims": "4.0.1-beta-23516",
+          "System.Security.Cryptography.X509Certificates": "4.0.0-beta-23516",
+          "System.Security.Principal": "4.0.1-beta-23516"
+        },
+        "compile": {
+          "lib/dotnet5.4/Microsoft.AspNet.Http.Features.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/Microsoft.AspNet.Http.Features.dll": {}
+        }
+      },
+      "Microsoft.AspNet.StaticFiles/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Hosting.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Http.Extensions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.WebEncoders": "1.0.0-rc1-final"
+        },
+        "compile": {
+          "lib/dotnet5.4/Microsoft.AspNet.StaticFiles.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/Microsoft.AspNet.StaticFiles.dll": {}
         }
       },
       "Microsoft.AspNet.WebApi.Client/5.2.3": {
@@ -2179,6 +2311,43 @@
           "lib/netstandard1.3/crypto.dll": {}
         }
       },
+      "RazorLight/1.0.0-rc1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Html.Abstractions": "1.0.0",
+          "Microsoft.AspNetCore.Razor": "1.0.0",
+          "Microsoft.AspNetCore.Razor.Runtime": "1.0.0",
+          "Microsoft.CodeAnalysis.CSharp": "1.3.0",
+          "Microsoft.Extensions.Caching.Memory": "1.0.0",
+          "Microsoft.Extensions.DependencyModel": "1.0.0",
+          "Microsoft.Extensions.FileProviders.Abstractions": "1.0.0",
+          "Microsoft.Extensions.FileProviders.Physical": "1.0.0",
+          "System.Buffers": "4.0.0",
+          "System.Runtime.Loader": "4.0.0",
+          "System.Text.Encodings.Web": "4.0.0"
+        },
+        "compile": {
+          "lib/netstandard1.6/RazorLight.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.6/RazorLight.dll": {}
+        }
+      },
+      "RazorLight.MVC/1.0.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+          "RazorLight": "1.0.0-rc1"
+        },
+        "compile": {
+          "lib/netstandard1.6/RazorLight.MVC.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.6/RazorLight.MVC.dll": {}
+        }
+      },
       "Remotion.Linq/2.1.1": {
         "type": "package",
         "dependencies": {
@@ -2741,6 +2910,19 @@
         },
         "runtime": {
           "lib/portable-net45+win8+wpa81/_._": {}
+        }
+      },
+      "System.Drawing.Primitives/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0"
+        },
+        "compile": {
+          "ref/netstandard1.1/System.Drawing.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.1/System.Drawing.Primitives.dll": {}
         }
       },
       "System.Dynamic.Runtime/4.0.11": {
@@ -4424,6 +4606,17 @@
         "lib/netstandard1.3/Braintree.dll"
       ]
     },
+    "CoreCompat.System.Drawing/1.0.0-beta006": {
+      "sha512": "KOBeVy8FHx9zkXrIZAM8OdXPrimROmvfB02fOegrYIelNN/zWhsOwzONgD7gw7wOTJgAFfdwpme5CiMraJj47Q==",
+      "type": "package",
+      "path": "CoreCompat.System.Drawing/1.0.0-beta006",
+      "files": [
+        "CoreCompat.System.Drawing.1.0.0-beta006.nupkg.sha512",
+        "CoreCompat.System.Drawing.nuspec",
+        "lib/net45/CoreCompat.System.Drawing.dll",
+        "lib/netstandard1.3/CoreCompat.System.Drawing.dll"
+      ]
+    },
     "Google.Apis/1.20.0": {
       "sha512": "zoJM6/lIsnhtpTV7six6S67zQ2BNEKZlzP/bZLC0eOHygatNWzDRxRPW4xONG5a8yEh7pr/3Mj1GDUoDIX5VHw==",
       "type": "package",
@@ -4588,6 +4781,84 @@
         "lib/win81/MailKit.xml",
         "lib/wpa81/MailKit.dll",
         "lib/wpa81/MailKit.xml"
+      ]
+    },
+    "Microsoft.AspNet.FileProviders.Abstractions/1.0.0-rc1-final": {
+      "sha512": "Tv6YJk78cH+gFipRNjeMpzzUg3t4BQiS0xYVlv/8gVNl4sI6ytAMYYfIbx8pCacIRH5Nx/Tw9GVn28eyw+JZfA==",
+      "type": "package",
+      "path": "Microsoft.AspNet.FileProviders.Abstractions/1.0.0-rc1-final",
+      "files": [
+        "Microsoft.AspNet.FileProviders.Abstractions.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.FileProviders.Abstractions.nuspec",
+        "lib/dotnet5.4/Microsoft.AspNet.FileProviders.Abstractions.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.FileProviders.Abstractions.xml",
+        "lib/net451/Microsoft.AspNet.FileProviders.Abstractions.dll",
+        "lib/net451/Microsoft.AspNet.FileProviders.Abstractions.xml"
+      ]
+    },
+    "Microsoft.AspNet.Hosting.Abstractions/1.0.0-rc1-final": {
+      "sha512": "07N5rzYcsjkLgwoI923FcAvvf7167qhLgCExXwYYkdZUIJQzneRG0DqZJTm6qpnaD5igf4FM9F+eh2m7y5NFbg==",
+      "type": "package",
+      "path": "Microsoft.AspNet.Hosting.Abstractions/1.0.0-rc1-final",
+      "files": [
+        "Microsoft.AspNet.Hosting.Abstractions.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Hosting.Abstractions.nuspec",
+        "lib/dotnet5.4/Microsoft.AspNet.Hosting.Abstractions.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Hosting.Abstractions.xml",
+        "lib/net451/Microsoft.AspNet.Hosting.Abstractions.dll",
+        "lib/net451/Microsoft.AspNet.Hosting.Abstractions.xml"
+      ]
+    },
+    "Microsoft.AspNet.Http.Abstractions/1.0.0-rc1-final": {
+      "sha512": "sfzc1WJMl8wGCF+rChVfJ7otT6tTv24RNXUej2r8tlQ2RDNnAozYyGb0SCW2mxpHrC31On99Wt0rksgF0c2WUw==",
+      "type": "package",
+      "path": "Microsoft.AspNet.Http.Abstractions/1.0.0-rc1-final",
+      "files": [
+        "Microsoft.AspNet.Http.Abstractions.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Http.Abstractions.nuspec",
+        "lib/dotnet5.4/Microsoft.AspNet.Http.Abstractions.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Http.Abstractions.xml",
+        "lib/net451/Microsoft.AspNet.Http.Abstractions.dll",
+        "lib/net451/Microsoft.AspNet.Http.Abstractions.xml"
+      ]
+    },
+    "Microsoft.AspNet.Http.Extensions/1.0.0-rc1-final": {
+      "sha512": "rsjbxD9W6NfqP0WNHMRyetIh6ZoKRbK1ea0V5xWdVAx53WdvgBy0HmkSwXt506+xU65jjZP19F4Ua4YjZdPHfQ==",
+      "type": "package",
+      "path": "Microsoft.AspNet.Http.Extensions/1.0.0-rc1-final",
+      "files": [
+        "Microsoft.AspNet.Http.Extensions.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Http.Extensions.nuspec",
+        "lib/dotnet5.4/Microsoft.AspNet.Http.Extensions.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Http.Extensions.xml",
+        "lib/net451/Microsoft.AspNet.Http.Extensions.dll",
+        "lib/net451/Microsoft.AspNet.Http.Extensions.xml"
+      ]
+    },
+    "Microsoft.AspNet.Http.Features/1.0.0-rc1-final": {
+      "sha512": "WlscfdAvN8XaaK1iv1Iewp5emei7+0SlXNkUh7kMJpeaS6K0GhwNmwqZR6VrT1oN+Maw98nEONHS34/suqQwOA==",
+      "type": "package",
+      "path": "Microsoft.AspNet.Http.Features/1.0.0-rc1-final",
+      "files": [
+        "Microsoft.AspNet.Http.Features.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Http.Features.nuspec",
+        "lib/dotnet5.4/Microsoft.AspNet.Http.Features.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Http.Features.xml",
+        "lib/net451/Microsoft.AspNet.Http.Features.dll",
+        "lib/net451/Microsoft.AspNet.Http.Features.xml"
+      ]
+    },
+    "Microsoft.AspNet.StaticFiles/1.0.0-rc1-final": {
+      "sha512": "JKFrKL6iwGzG+DO9vwP8fEbz3gHA9K6SoCE/Th/oIwxDEENNF2TAYjjAag5c0iJcaK3+X8+s2RkA/zZ+vWHOTg==",
+      "type": "package",
+      "path": "Microsoft.AspNet.StaticFiles/1.0.0-rc1-final",
+      "files": [
+        "Microsoft.AspNet.StaticFiles.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.StaticFiles.nuspec",
+        "lib/dotnet5.4/Microsoft.AspNet.StaticFiles.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.StaticFiles.xml",
+        "lib/net451/Microsoft.AspNet.StaticFiles.dll",
+        "lib/net451/Microsoft.AspNet.StaticFiles.xml"
       ]
     },
     "Microsoft.AspNet.WebApi.Client/5.2.3": {
@@ -6398,6 +6669,28 @@
         "lib/portable-net4+sl5+wp8+win8+wpa81/crypto.xml"
       ]
     },
+    "RazorLight/1.0.0-rc1": {
+      "sha512": "89yi0AUxq2uNkX3T942CXdnCbkgN9D0+hQZi5PgmPBcAaRow2JfjNphELyN9wT7peYuq3V0RpadJP74EOh532g==",
+      "type": "package",
+      "path": "RazorLight/1.0.0-rc1",
+      "files": [
+        "RazorLight.1.0.0-rc1.nupkg.sha512",
+        "RazorLight.nuspec",
+        "lib/net451/RazorLight.dll",
+        "lib/netstandard1.6/RazorLight.dll"
+      ]
+    },
+    "RazorLight.MVC/1.0.3": {
+      "sha512": "r+DJneYYAZ/aqlC/GrN+MJbir7hn4yExzXljOoA7cQ/kCDfXeeO3sL6OwJghLmpSd8dBxZtizUljWp1vZdZgQA==",
+      "type": "package",
+      "path": "RazorLight.MVC/1.0.3",
+      "files": [
+        "RazorLight.MVC.1.0.3.nupkg.sha512",
+        "RazorLight.MVC.nuspec",
+        "lib/net451/RazorLight.MVC.dll",
+        "lib/netstandard1.6/RazorLight.MVC.dll"
+      ]
+    },
     "Remotion.Linq/2.1.1": {
       "sha512": "IJn0BqkvwEDpP+2qjvci7n4/a9f7DhKESLWb2/uG4xQh3rTkGTBUz69bI4IivCoKkTFAqjXxYDZw2K/npohjsw==",
       "type": "package",
@@ -7587,6 +7880,21 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Drawing.Primitives/4.0.0": {
+      "sha512": "9lVRG1voBwzLGZkf1XFJrobdZDZ5ZHMU4FVTbXAbzehpN90yYgkUeo9GoEYdvkt/EXaaHZJAeuffXP4JBbY+Ig==",
+      "type": "package",
+      "path": "System.Drawing.Primitives/4.0.0",
+      "files": [
+        "System.Drawing.Primitives.4.0.0.nupkg.sha512",
+        "System.Drawing.Primitives.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/net45/System.Drawing.Primitives.dll",
+        "lib/netstandard1.1/System.Drawing.Primitives.dll",
+        "ref/net45/System.Drawing.Primitives.dll",
+        "ref/netstandard1.1/System.Drawing.Primitives.dll"
       ]
     },
     "System.Dynamic.Runtime/4.0.11": {
@@ -11294,9 +11602,11 @@
   "projectFileDependencyGroups": {
     "": [
       "Braintree >= 3.5.0",
+      "CoreCompat.System.Drawing >= 1.0.0-beta006",
       "Google.Apis.Auth >= 1.20.0",
       "Google.Apis.Oauth2.v2 >= 1.20.0.672",
       "MailKit >= 1.10.1",
+      "Microsoft.AspNet.StaticFiles >= 1.0.0-rc1-final",
       "Microsoft.AspNetCore.Mvc >= 1.0.0",
       "Microsoft.AspNetCore.Server.IISIntegration >= 1.0.0",
       "Microsoft.AspNetCore.Server.IISIntegration.Tools >= 1.0.0-preview2-final",
@@ -11311,6 +11621,8 @@
       "Microsoft.Extensions.Logging.Debug >= 1.0.0",
       "Microsoft.Extensions.Options.ConfigurationExtensions >= 1.0.0",
       "Microsoft.NETCore.App >= 1.0.0",
+      "RazorLight >= 1.0.0-rc1",
+      "RazorLight.MVC >= 1.0.3",
       "SendGrid.NetCore >= 1.0.0-rtm-00002"
     ],
     ".NETCoreApp,Version=v1.0": []

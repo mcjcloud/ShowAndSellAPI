@@ -13,6 +13,7 @@ using Microsoft.AspNetCore;
 using ShowAndSellAPI.Models;
 using ShowAndSellAPI.Models.Database;
 using System.Data.SqlClient;
+using Microsoft.AspNet.Builder;
 
 namespace ShowAndSellAPI
 {
@@ -41,7 +42,7 @@ namespace ShowAndSellAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -53,6 +54,7 @@ namespace ShowAndSellAPI
                     template: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
             });
+
         }
     }
 }

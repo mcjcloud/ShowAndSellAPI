@@ -157,9 +157,7 @@ namespace ShowAndSellAPI.Controllers
             SSUser user = _context.Users.Where(e => e.SSUserId == id).FirstOrDefault();
             if (user == null) return NotFound("User with User ID " + id + " not found.");
 
-            bool fieldsFilled =
-                updateRequest.NewPassword.Count() > 0
-                && updateRequest.OldPassword.Count() > 0
+            bool fieldsFilled = updateRequest.OldPassword.Count() > 0
                 && updateRequest.NewFirstName.Count() > 0
                 && updateRequest.NewLastName.Count() > 0
                 && updateRequest.NewEmail.Count() > 0;
@@ -191,7 +189,7 @@ namespace ShowAndSellAPI.Controllers
             }
 
             // update the userdata
-            user.Password = updateRequest.NewPassword;
+            user.Password = (updateRequest.NewPassword.Count() > 0) ? updateRequest.NewPassword : updateRequest.OldPassword;       // only update the password if there is a new one
             user.FirstName = updateRequest.NewFirstName;
             user.LastName = updateRequest.NewLastName;
             user.Email = updateRequest.NewEmail;

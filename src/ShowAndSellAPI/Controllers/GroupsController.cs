@@ -210,7 +210,6 @@ namespace ShowAndSellAPI.Controllers
             {
                 if (group.AdminId == admin.SSUserId) return BadRequest("Group under admin " + admin.Email + " already exists.");
                 if (group.Name == groupRequest.Group.Name) return BadRequest("Group with name " + groupRequest.Group.Name + " already exists.");
-                if (group.Latitude == groupRequest.Group.Latitude && group.Longitude == groupRequest.Group.Longitude) return BadRequest("Location already in use.");
             }
 
             // add the group to the database.
@@ -248,6 +247,7 @@ namespace ShowAndSellAPI.Controllers
 
             groupToUpdate.Name = groupRequest.NewName;
             groupToUpdate.LocationDetail = groupRequest.NewLocationDetail;
+            groupToUpdate.Address = groupRequest.NewAddress;
             groupToUpdate.Latitude = groupRequest.NewLatitude;
             groupToUpdate.Longitude = groupRequest.NewLongitude;
             _context.Update(groupToUpdate);
