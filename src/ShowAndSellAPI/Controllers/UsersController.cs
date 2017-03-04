@@ -90,6 +90,44 @@ namespace ShowAndSellAPI.Controllers
                 return NotFound("User with email " + email + " not found.");
             }
         }
+        // /api/users/googleuser?email={gmail email address}&userId={userId of user}&firstName={
+        // POST user information for someone signing in from Google
+        [HttpPost]
+        public IActionResult GoogleUser([FromBody]GoogleUserModel user)
+        {
+            var existingUser = _context.Users.Where(e => e.Email.Equals(user.Email)).FirstOrDefault();
+            if(existingUser == null)
+            {
+                // create the user
+                SSUser newUser = new SSUser
+                {
+                    SSUserId = Guid.NewGuid().ToString(),
+                    GroupId = "",
+                    Email = user.Email,
+                    Password = user.UserID,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                
+                // add the user to the database
+                _context.Users.Add(newUser);
+                _context.SaveChanges();
+
+                // return the user
+                return new ObjectResult(newUser);
+            }
+            else
+            {
+                if (existingUser.Password.Equals(user.UserID))
+                {
+                    return new ObjectResult(existingUser);
+                }
+                else
+                {
+                    return StatusCode(409, "Account with email already exists.");
+                }
+            }
+        }
         // /api/users/userbyuserid?id={user id}&password={user password}
         // GET a User with the given User ID and password.
         [HttpGet]
@@ -246,6 +284,11 @@ namespace ShowAndSellAPI.Controllers
                 {
                     _context.Remove(message);
                 }
+
+                // remove the full size image
+                var imageToRemove = _context.Images.Where(e => e.ItemId.Equals(item.SSItemId)).FirstOrDefault();
+                imageToRemove.Thumbnail = "";
+                _context.Remove(imageToRemove);
 
                 _context.Remove(item);
             }

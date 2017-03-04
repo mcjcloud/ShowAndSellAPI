@@ -260,10 +260,13 @@ C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndS
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170208024157_doublelatlongmigration.Designer.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170301055632_AddressMigration.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170301055632_AddressMigration.Designer.cs
+C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170302083611_FullImageMigration.cs
+C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\20170302083611_FullImageMigration.Designer.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Migrations\SSDbContextModelSnapshot.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\EmailModel.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSBookmark.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSGroup.cs
+C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSImage.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSItem.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSMessage.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\SSUser.cs
@@ -273,6 +276,7 @@ C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndS
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\BuyItemRequest.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\GetBookmarkResponse.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\GetMessageResponse.cs
+C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\GoogleUserModel.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\UpdateGroupRequest.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\UpdateItemRequest.cs
 C:\Users\brayd\Documents\Visual Studio 2015\Projects\ShowAndSellAPI\src\ShowAndSellAPI\Models\Http\UpdateUserRequest.cs

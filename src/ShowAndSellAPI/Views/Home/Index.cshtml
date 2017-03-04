@@ -252,6 +252,56 @@
                     </table>
                 </div>
             </div>
+            <div class="method" id="GoogleUser">
+                <p class="alignLeft">POST GoogleUser</p>
+                <p class="alignRight">GET and/or create a user from google credentials.</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/users/googleuser</p>
+                    <div style="clear: both"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>email</td>
+                            <td>the gmail email address</td>
+                        </tr>
+                        <tr>
+                            <td>UserId</td>
+                            <td>the id from the GIDSignIn</td>
+                        </tr>
+                        <tr>
+                            <td>firstName</td>
+                            <td>the first name of the user (parse from the GIDSignIn)</td>
+                        </tr>
+                        <tr>
+                            <td>lastName</td>
+                            <td>the last name of the user (parse from GIDSignIn)</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <td>Code</td>
+                            <td>Reason</td>
+                        </tr>
+                        <tr>
+                            <td>409</td>
+                            <td>Account with gmail account already exists.</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>User found/created and returned.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <div class="method" id="Create">
                 <p class="alignLeft">POST Create</p>
                 <p class="alignRight">POST a User to the server.</p>
@@ -732,7 +782,7 @@
             </div>
             <div class="method" id="PaymentToken">
                 <p class="alignLeft">GET PaymentToken</p>
-                <p class="alignRight">GET a token for getting payment info and Nonce.</p>
+                <p class="alignRight">GET a token to request payment nonce.</p>
                 <div style="clear: both;"></div>
                 <div class="dropDown">
                     <hr />
@@ -759,7 +809,45 @@
                         </tr>
                         <tr>
                             <td>200</td>
-                            <td>the token as a string.</td>
+                            <td>the payment token as a string.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="method" id="FullImage">
+                <p class="alignLeft">GET FullImage</p>
+                <p class="alignRight">GET the fullsize image for the given ItemID</p>
+                <div style="clear: both;"></div>
+                <div class="dropDown">
+                    <hr />
+                    <p class="alignLeft">Request URL</p>
+                    <p class="alignRight">/api/items/fullimage?itemId={item id}</p>
+                    <div style="clear: both;"></div>
+
+                    <p>Json</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>No parameters</td>
+                            <td>No parameters</td>
+                        </tr>
+                    </table>
+                    <p>Responses</p>
+                    <table>
+                        <tr>
+                            <th>Code</th>
+                            <th>Reason</th>
+                        </tr>
+                        <tr>
+                            <td>401</td>
+                            <td>Image not found.</td>
+                        </tr>
+                        <tr>
+                            <td>200</td>
+                            <td>the image as a base64 encoded string.</td>
                         </tr>
                     </table>
                 </div>

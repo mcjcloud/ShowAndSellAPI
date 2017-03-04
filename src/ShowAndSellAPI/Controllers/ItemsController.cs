@@ -12,6 +12,8 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using System.Diagnostics;
 using Braintree;
+using System.Drawing;
+using System.IO;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -137,29 +139,29 @@ namespace ShowAndSellAPI.Controllers
         [HttpGet]
         public IActionResult ApprovedInRange([FromQuery]string groupId, [FromQuery]int start, [FromQuery]int end)
         {
-            int finish = (end >= 0 && end <= _context.Items.Count()) ? end : _context.Items.Count();    // end > 0 and less than equal to the array size, default to 0.
-            int begin = (start >= 0 && start <= finish) ? start : 0;                                    // make sure start is greater than 0 and lessequal to end. Default to 0
 
             SSGroup group = _context.Groups.Where(e => e.SSGroupId.Equals(groupId)).FirstOrDefault();
             if (group == null) return NotFound("Group not found.");
-            else
+            IEnumerable<SSItem> approvedItems = _context.Items.Where(e => e.Approved && e.GroupId.Equals(group.SSGroupId));
+
+            int finish = (end >= 0 && end <= approvedItems.Count()) ? end : approvedItems.Count();    // end > 0 and less than equal to the array size, default to 0.
+            int begin = (start >= 0 && start <= finish) ? start : 0;                                  // make sure start is greater than 0 and lessequal to end. Default to 0
+            
+            List<SSItem> items = new List<SSItem>();
+            for (int i = begin, j = 0; i < finish; i++)
             {
-                IEnumerable<SSItem> approvedItems = _context.Items.Where(e => e.Approved && e.GroupId.Equals(group.SSGroupId));
-                List<SSItem> items = new List<SSItem>();
-                for (int i = begin, j = 0; i < finish; i++)
-                {
-                    items.Insert(j, approvedItems.ToArray().GetValue(i) as SSItem);
-                    j += 1;
-                }
-
-                // check size
-                if (items.Count() <= 0)
-                {
-                    return NotFound("No approved Items found in the specified Group.");
-                }
-
-                return new ObjectResult(items);
+                var itemToInsert = approvedItems.ToArray().GetValue(i);
+                items.Insert(j, itemToInsert as SSItem);
+                j += 1;
             }
+
+            // check size
+            if (items.Count() <= 0)
+            {
+                return NotFound("No approved Items found in the specified Group.");
+            }
+
+            return new ObjectResult(items);
         }
         // /api/items/paymenttoken
         // GET a gateway token to make a purchase with
@@ -169,6 +171,8 @@ namespace ShowAndSellAPI.Controllers
             var clientToken = gateway.ClientToken.generate();
             return clientToken;
         }
+        // /api/items/sendreceipt?id={item id}&userId={user to emulate purchase for}
+        // GET a fake receipt sent without deleting the item.
         [HttpGet]
         public IActionResult SendReceipt([FromQuery]string id, [FromQuery]string userId)
         {
@@ -183,6 +187,17 @@ namespace ShowAndSellAPI.Controllers
 
             var task =  SendMail(user, item, group);
             return StatusCode(200, "Fake recipet sent.");
+        }
+        // /api/items/fullimage?itemId={item id}
+        // GET the full size image (high quality) for the given ItemID
+        [HttpGet]
+        public IActionResult FullImage([FromQuery]string itemId)
+        {
+            // get the requested item image
+            var image = _context.Images.Where(e => e.ItemId.Equals(itemId)).FirstOrDefault();
+            if (image == null) return NotFound("Image not found");
+
+            return new ObjectResult(image.Thumbnail);
         }
 
         // /api/items/create
@@ -204,9 +219,33 @@ namespace ShowAndSellAPI.Controllers
             var valid = item.Name != null && item.Condition != null && item.Description != null && item.Thumbnail != null && item.GroupId != null && item.OwnerId != null;
             if (!valid) return StatusCode(449, "Some fields missing or invalid.");
 
+            // Lower quality of image for storing
+            byte[] byteBuffer = Convert.FromBase64String(item.Thumbnail);
+            Image img;
+            using (MemoryStream memoryStream = new MemoryStream(byteBuffer))
+            {
+                img = Image.FromStream(memoryStream, true);
+            }
+            Bitmap newImg = new Bitmap(img, new Size(img.Width / 2, img.Height / 2));       // reduce to 3/4 the size
+
+            // base64 encode the new image
+            string newBase64 = "";
+            using (MemoryStream ms = new MemoryStream())
+            {
+                newImg.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                byte[] data = ms.ToArray();
+                newBase64 = Convert.ToBase64String(data);
+            }
+
             // finalize the item and add it to the database.
             item.SSItemId = Guid.NewGuid().ToString();
             item.Approved = false;
+            _context.Images.Add(new SSImage // save the full size image seperately
+            {
+                ItemId = item.SSItemId,
+                Thumbnail = item.Thumbnail
+            });
+            item.Thumbnail = newBase64;     // set the item thumbnail to the low res image
             _context.Items.Add(item);
             _context.SaveChanges();
 
@@ -283,12 +322,37 @@ namespace ShowAndSellAPI.Controllers
             bool valid = itemRequest.NewName.Count() > 0 && itemRequest.NewPrice.Count() > 0 && itemRequest.NewCondition.Count() > 0 && itemRequest.NewDescription.Count() > 0 && itemRequest.NewThumbnail.Count() > 0;
             if (!valid) return StatusCode(449, "Some fields are missing or invalid.");
 
+            // Lower quality of image for storing
+            byte[] byteBuffer = Convert.FromBase64String(itemToUpdate.Thumbnail);
+            Image img;
+            using (MemoryStream memoryStream = new MemoryStream(byteBuffer))
+            {
+                img = Image.FromStream(memoryStream, true);
+            }
+            Bitmap newImg = new Bitmap(img, new Size(img.Width / 2, img.Height / 2));
+
+            // base64 encode the new image
+            string newBase64 = "";
+            using (MemoryStream ms = new MemoryStream())
+            {
+                newImg.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                byte[] data = ms.ToArray();
+                newBase64 = Convert.ToBase64String(data);
+            }
+
+            // update the full size image
+            var fullImage = _context.Images.Where(e => e.ItemId.Equals(itemToUpdate.SSItemId)).FirstOrDefault();
+            if (fullImage != null)
+            {
+                fullImage.Thumbnail = itemRequest.NewThumbnail;
+            }
+
             // set item properties
             itemToUpdate.Name = itemRequest.NewName;
             itemToUpdate.Price = itemRequest.NewPrice;
             itemToUpdate.Condition = itemRequest.NewCondition;
             itemToUpdate.Description = itemRequest.NewDescription;
-            itemToUpdate.Thumbnail = itemRequest.NewThumbnail;
+            itemToUpdate.Thumbnail = newBase64;
             itemToUpdate.Approved = itemRequest.Approved;
 
             // update and save changes
@@ -325,6 +389,11 @@ namespace ShowAndSellAPI.Controllers
             {
                 _context.Remove(message);
             }
+
+            // remove the full size image
+            var imageToRemove = _context.Images.Where(e => e.ItemId.Equals(itemToDelete.SSItemId)).FirstOrDefault();
+            imageToRemove.Thumbnail = "";
+            _context.Remove(imageToRemove);
 
             // delete the item and return the object that was deleted.
             _context.Remove(itemToDelete);

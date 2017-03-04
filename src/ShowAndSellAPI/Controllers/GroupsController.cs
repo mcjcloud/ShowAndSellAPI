@@ -289,6 +289,11 @@ namespace ShowAndSellAPI.Controllers
                     user.GroupId = "";
                 }
 
+                // remove the full size image
+                var imageToRemove = _context.Images.Where(e => e.ItemId.Equals(item.SSItemId)).FirstOrDefault();
+                imageToRemove.Thumbnail = "";
+                _context.Remove(imageToRemove);
+
                 _context.Remove(item);
             }
 
