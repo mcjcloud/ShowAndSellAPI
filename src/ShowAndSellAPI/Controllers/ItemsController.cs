@@ -322,37 +322,12 @@ namespace ShowAndSellAPI.Controllers
             bool valid = itemRequest.NewName.Count() > 0 && itemRequest.NewPrice.Count() > 0 && itemRequest.NewCondition.Count() > 0 && itemRequest.NewDescription.Count() > 0 && itemRequest.NewThumbnail.Count() > 0;
             if (!valid) return StatusCode(449, "Some fields are missing or invalid.");
 
-            // Lower quality of image for storing
-            byte[] byteBuffer = Convert.FromBase64String(itemToUpdate.Thumbnail);
-            Image img;
-            using (MemoryStream memoryStream = new MemoryStream(byteBuffer))
-            {
-                img = Image.FromStream(memoryStream, true);
-            }
-            Bitmap newImg = new Bitmap(img, new Size(img.Width / 2, img.Height / 2));
-
-            // base64 encode the new image
-            string newBase64 = "";
-            using (MemoryStream ms = new MemoryStream())
-            {
-                newImg.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                byte[] data = ms.ToArray();
-                newBase64 = Convert.ToBase64String(data);
-            }
-
-            // update the full size image
-            var fullImage = _context.Images.Where(e => e.ItemId.Equals(itemToUpdate.SSItemId)).FirstOrDefault();
-            if (fullImage != null)
-            {
-                fullImage.Thumbnail = itemRequest.NewThumbnail;
-            }
-
             // set item properties
             itemToUpdate.Name = itemRequest.NewName;
             itemToUpdate.Price = itemRequest.NewPrice;
             itemToUpdate.Condition = itemRequest.NewCondition;
             itemToUpdate.Description = itemRequest.NewDescription;
-            itemToUpdate.Thumbnail = newBase64;
+            itemToUpdate.Thumbnail = itemRequest.NewThumbnail;
             itemToUpdate.Approved = itemRequest.Approved;
 
             // update and save changes
