@@ -78,13 +78,13 @@ namespace ShowAndSellAPI.Controllers
         public IActionResult GroupsInRadius([FromQuery]float radius, [FromQuery]double latitude, [FromQuery]double longitude)
         {
             // convert to radians.
-            latitude = latitude * 0.0174533;
-            longitude = longitude * 0.0174533;
+            latitude = latitude * (Math.PI / 180);          // 32.8984211013027 ->  0.5741857669
+            longitude = longitude * (Math.PI / 180);        // -97.2801185120803 -> -1.697858365
 
             // conversion
             double latConst = 69.172;
-            double latMiles = latitude * latConst;                          // 2276.463946
-            double longMiles = Math.Cos(latitude) * latConst * longitude; // -5648.650814
+            double latMiles = latitude * latConst;                          // 39.71757787
+            double longMiles = Math.Cos(latitude) * latConst * longitude;   // -98.61029058
 
             Debug.WriteLine("cos(lat): " + Math.Cos(latitude));
             Debug.WriteLine("latMiles: " + latMiles + " longMiles: " + longMiles);
@@ -94,19 +94,21 @@ namespace ShowAndSellAPI.Controllers
             foreach(var group in _context.Groups.ToArray())
             {
                 // convert to radians.
-                group.Latitude = group.Latitude * 0.0174533;
-                group.Longitude = group.Longitude * 0.0174533;
+                var groupLat = group.Latitude * (Math.PI / 180);    // 34.6081320802352     ->  0.6040258528
+                var groupLong = group.Longitude * (Math.PI / 180);  // -98.0928189586848    ->  -1.712042663
 
                 // lat/long to miles
-                double groupLatMiles = group.Latitude * latConst;                                   // 2275.270487
-                double groupLongMiles = (Math.Cos(group.Latitude) * latConst) * group.Longitude;    // -5651.243445
+                double groupLatMiles = groupLat * latConst;                             // 41.78167629
+                double groupLongMiles = Math.Cos(groupLat) * latConst * groupLong;      // -97.47072064
 
-                Debug.WriteLine("cos(groupLat): " + Math.Cos(group.Latitude));
+                Debug.WriteLine("cos(groupLat): " + Math.Cos(groupLat));
+                Debug.WriteLine("groupLat: " + groupLat);
+                Debug.WriteLine("lat: " + latitude);
                 Debug.WriteLine("groupLat: " + groupLatMiles + " groupLong: " + groupLongMiles);
 
                 // pythagorean therom for distance between.
-                double distance = Math.Abs(Math.Sqrt(Math.Pow((groupLatMiles - latMiles), 2) + Math.Pow((groupLongMiles - longMiles), 2)));
-                Debug.WriteLine("distance from (" + latitude + ", " + longitude + ") to (" + group.Latitude + ", " + group.Longitude + "): " + distance);
+                double distance = Math.Abs(Math.Sqrt(Math.Pow(Math.Abs(groupLatMiles - latMiles), 2) + Math.Pow(Math.Abs(groupLongMiles - longMiles), 2)));
+                Debug.WriteLine("distance from (" + latitude + ", " + longitude + ") to (" + groupLat + ", " + groupLong + "): " + distance);
                 // if the distance is <= the radius, append to the list.
                 if(distance <= radius)
                 {

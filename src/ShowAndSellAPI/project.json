@@ -25,7 +25,8 @@
     },
     "RazorLight": "1.0.0-rc1",
     "RazorLight.MVC": "1.0.3",
-    "SendGrid.NetCore": "1.0.0-rtm-00002"
+    "SendGrid.NetCore": "1.0.0-rtm-00002",
+    "Tinify": "1.5.0"
   },
 
   "tools": {

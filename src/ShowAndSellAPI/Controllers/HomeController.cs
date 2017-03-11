@@ -16,5 +16,10 @@ namespace ShowAndSellAPI.Controllers
         {
             return View();
         }
+
+        public IActionResult TweetItem([FromQuery]string id)
+        {
+            return View("TweetItem");
+        }
     }
 }

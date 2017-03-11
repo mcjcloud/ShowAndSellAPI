@@ -15,6 +15,8 @@ using Braintree;
 using System.Drawing;
 using System.IO;
 
+using TinifyAPI;
+
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ShowAndSellAPI.Controllers
@@ -37,6 +39,9 @@ namespace ShowAndSellAPI.Controllers
         {
             _context = context;
             _environment = env;
+
+            // init TinyPNG
+            Tinify.Key = "9hwwzu-L3mN0kXsBQIgGQvQsvVGAnjr_";
         }
 
         // /api/items/allitems
@@ -221,21 +226,19 @@ namespace ShowAndSellAPI.Controllers
 
             // Lower quality of image for storing
             byte[] byteBuffer = Convert.FromBase64String(item.Thumbnail);
+            /*
             Image img;
             using (MemoryStream memoryStream = new MemoryStream(byteBuffer))
             {
                 img = Image.FromStream(memoryStream, true);
             }
-            Bitmap newImg = new Bitmap(img, new Size(img.Width / 2, img.Height / 2));       // reduce to 3/4 the size
+            //Bitmap newImg = new Bitmap(img, new Size(img.Width / 2, img.Height / 2));       // reduce to 3/4 the size
+            */
+            // Reduce size using Tinify
+            var reducedData = ReduceImageSize(byteBuffer).Result;
 
             // base64 encode the new image
-            string newBase64 = "";
-            using (MemoryStream ms = new MemoryStream())
-            {
-                newImg.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                byte[] data = ms.ToArray();
-                newBase64 = Convert.ToBase64String(data);
-            }
+            string newBase64 = Convert.ToBase64String(reducedData);
 
             // finalize the item and add it to the database.
             item.SSItemId = Guid.NewGuid().ToString();
@@ -417,6 +420,13 @@ namespace ShowAndSellAPI.Controllers
                 await client.SendAsync(emailMessage).ConfigureAwait(false);
                 await client.DisconnectAsync(true).ConfigureAwait(false);
             }
+        }
+
+        // Reduce image size
+        public async Task<byte[]> ReduceImageSize(byte[] imageData)
+        {
+            var result = await Tinify.FromBuffer(imageData).ToBuffer();
+            return result;
         }
     }
 }
